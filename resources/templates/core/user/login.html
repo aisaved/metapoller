@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body-scripts %}
+
+{% endblock %}
+
+{% block content %}
+<h4>{{message}}</h4>
+<div id="login-form">
+  
+</div>
+Forgot password? <a href="forgot-password">Click Here</a>
+
+
+{% endblock %}
+{% block page-scripts %}
+<script>
+  
+centipair.registry.load_function("render-login-form");
+
+</script>
+
+{% endblock %}
+

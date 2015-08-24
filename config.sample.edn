@@ -1,0 +1,7 @@
+{:db 
+ {:sql
+  {:db "database-name"
+   :user "username"
+   :password "password"}
+  :cassandra
+  {:cluster ["127.0.0.1"]}}}

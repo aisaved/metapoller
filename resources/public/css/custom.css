@@ -1,0 +1,88 @@
+.clickable{
+    cursor:pointer;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.data-row{
+    cursor:pointer;
+}
+
+.notify {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    margin-left: -150px;
+    z-index: 9999;
+    text-align:center;
+    font-weight:bold;
+    top:8px;
+    padding:3px 0px 3px 0px;
+    
+}
+
+.notify-loading{
+    width: 150px;
+    background-color: #f9edbe;
+    border-color: #f0c36d;
+}
+
+.notify-error{
+    width: 300px;
+    background-color: #E74C3C;
+    border-color: #E74C3C;
+}
+
+
+.form-error{
+    color:#dd4b39
+}
+
+.has-error .message-label{
+    color:#dd4b39
+}
+
+.action-bar{
+    margin-bottom :10px;
+    margin-top: 10px;
+    
+}
+
+.search-input{
+    width:45%;
+}
+
+
+.job-list{
+    cursor:pointer;
+    border-bottom: 1px solid #eee;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.job-list:hover{
+    background-color: #F6F09D;
+}
+
+.price{
+    display: block;
+    font-size: 50px;
+    line-height: 50px;}
+
+.price sup {
+  top: -20px;
+  left: 2px;
+  font-size: 20px;
+}
+
+.period {
+  display: block;
+  font-style: italic;
+}
+
+.btn-near{
+    margin-right:5px;
+}
