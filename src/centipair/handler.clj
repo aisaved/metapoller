@@ -1,6 +1,7 @@
 (ns centipair.handler
   (:require [compojure.core :refer [defroutes routes wrap-routes]]
             [centipair.routes.home :refer [home-routes]]
+            [centipair.routes.admin :refer [admin-routes]]
             [centipair.core.auth.user.routes :refer [user-routes]]
             [centipair.core.auth.user.api :refer [api-user-routes]]
       
@@ -82,6 +83,7 @@
     (wrap-routes #'api-user-routes middleware/wrap-csrf)
     (wrap-routes #'user-routes middleware/wrap-csrf)
     (wrap-routes #'home-routes middleware/wrap-csrf)
+    (wrap-routes #'admin-routes middleware/wrap-csrf)
     #'base-routes))
 
 (def app (middleware/wrap-base #'app-base))

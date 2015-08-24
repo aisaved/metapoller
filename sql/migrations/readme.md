@@ -1,1 +1,0 @@
-# Put sql migration files in this directory

@@ -58,35 +58,3 @@ CREATE TABLE user_password_reset(
        );
 
 
-/*symbols*/
-CREATE TABLE symbols (
-       symbol_id serial PRIMARY KEY,
-       symbol varchar(20),
-       name varchar(100),
-       sector varchar(250),
-       industry varchar(250),
-       market_cap decimal (16,2));
-
-CREATE INDEX symbol_name_index ON symbols(symbol);
-
-
-/*API*/
-CREATE TABLE accrue_app(
-       app_id serial PRIMARY KEY,
-       app_key varchar(1024) NOT NULL,
-       app_secret varchar(1024),
-       app_title varchar(1024),
-       app_description text       
-       );
-
-CREATE TABLE accrue_app_token(
-       app_token_id serial PRIMARY KEY,
-       app_id integer,
-       app_auth_token varchar(1024),
-       app_auth_token_expiry TIMESTAMP,
-       CONSTRAINT accrue_app_token_accrue_app_id_fkey FOREIGN KEY (app_id)
-       REFERENCES accrue_app (app_id) MATCH SIMPLE
-       ON DELETE CASCADE
-       );
-
-/*events*/
