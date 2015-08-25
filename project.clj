@@ -4,10 +4,10 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [selmer "0.8.9"]
+                 [selmer "0.9.0"]
                  [com.taoensso/timbre "4.1.1"]
                  [com.taoensso/tower "3.0.2"]
-                 [markdown-clj "0.9.67"]
+                 [markdown-clj "0.9.69"]
                  [environ "1.0.0"]
                  [compojure "1.4.0"]
                  [ring/ring-defaults "0.1.5"]
@@ -15,7 +15,7 @@
                  [metosin/ring-middleware-format "0.6.0"]
                  [ring "1.4.0"
                   :exclusions [ring/ring-jetty-adapter]]
-                 [metosin/ring-http-response "0.6.3"]
+                 [metosin/ring-http-response "0.6.4"]
                  [bouncer "0.3.3"]
                  [prone "0.8.2"]
                  [org.clojure/tools.nrepl "0.2.10"]
@@ -25,11 +25,11 @@
                  [org.postgresql/postgresql "9.2-1002-jdbc4"]
                  [buddy "0.6.1"]
                  [lib-noir "0.9.9"]
-                 [danlentz/clj-uuid "0.1.5"]
+                 [danlentz/clj-uuid "0.1.6"]
                  [com.novemberain/validateur "2.4.2"]
-                 [liberator "0.12.2"]
+                 [liberator "0.13"]
                  [crypto-password "0.1.3"]
-                 [buddy/buddy-auth "0.5.3"]                 
+                 [buddy/buddy-auth "0.6.1"]                 
                  [org.immutant/web "2.0.2"]
                  [org.immutant/scheduling "2.0.2"]
                  [aleph "0.4.0"]
@@ -39,7 +39,7 @@
                  [clj-time "0.11.0"]
                  [org.xerial.snappy/snappy-java "1.1.1.7"] 
                  [org.clojure/tools.reader "0.9.2"]
-                 [org.clojure/clojurescript "1.7.48" :scope "provided"]
+                 [org.clojure/clojurescript "1.7.107" :scope "provided"]
                  [org.clojure/tools.reader "0.9.2"]
                  [weasel "0.7.0"]
                  [reagent "0.5.0"]
@@ -48,10 +48,8 @@
                  ;;[reagent-utils "0.1.5"]
                  [secretary "1.2.3"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [cljs-ajax "0.3.13"]
-                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]
-                 [clojurewerkz/cassaforte "2.0.0"]
-                 [incanter/incanter-core "1.5.6"]]
+                 [cljs-ajax "0.3.14"]
+                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
 
   :min-lein-version "2.0.0"
   :uberjar-name "metapoller.jar"
@@ -110,7 +108,7 @@
              
              :aot :all}
    :dev {:dependencies [[ring-mock "0.1.5"]
-                        [ring/ring-devel "1.3.2"]
+                        [ring/ring-devel "1.4.0"]
                         [pjstadig/humane-test-output "0.7.0"]
                         [lein-figwheel "0.3.7"]
                         [org.clojure/tools.nrepl "0.2.10"]]
