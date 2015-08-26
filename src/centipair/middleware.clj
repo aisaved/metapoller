@@ -13,7 +13,7 @@
             [ring.middleware.session.memory :refer [memory-store]]
             [ring.middleware.format :refer [wrap-restful-format]]
             [buddy.auth.accessrules :refer [wrap-access-rules error]]
-            [centipair.core.auth.user.models :refer [logged-in?]]
+            [centipair.core.auth.user.models :refer [logged-in? is-admin?]]
             ))
 
 
@@ -32,10 +32,10 @@
 
 
 (def rules
-  [{:uri "/dashboard*"
-    :handler logged-in?
+  [{:uri "/admin*"
+    :handler is-admin?
     :on-error on-error}
-   {:uri "/private/api/*"
+   {:uri "/admin/api/*"
     :handler logged-in?
     :on-error on-error-api}])
 

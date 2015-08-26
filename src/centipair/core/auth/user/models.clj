@@ -61,6 +61,13 @@
     false
     true))
 
+(defn is-admin?
+  [request]
+  (let [auth-user (get-authenticated-user request)]
+    (if (nil? auth-user)
+      false
+      (:is_admin auth-user))))
+
 ;;validations
 (defn email-exist-check
   [value]

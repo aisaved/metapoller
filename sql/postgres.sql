@@ -63,6 +63,7 @@ CREATE TABLE poll(
        poll_title VARCHAR (1024) NOT NULL,
        poll_hash_tag VARCHAR (1024) NOT NULL,
        poll_description text UNIQUE NOT NULL,
+       poll_created_date TIMESTAMP NOT NULL
        );
 
 CREATE TABLE user_poll(
