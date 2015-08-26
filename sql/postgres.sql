@@ -58,3 +58,21 @@ CREATE TABLE user_password_reset(
        );
 
 
+CREATE TABLE poll(
+       poll_id serial PRIMARY KEY,
+       poll_title VARCHAR (1024) NOT NULL,
+       poll_hash_tag VARCHAR (1024) NOT NULL,
+       poll_description text UNIQUE NOT NULL,
+       );
+
+CREATE TABLE user_poll(
+       user_poll_id serial PRIMARY KEY,
+       poll_id integer NOT NULL,
+       user_account_id integer NOT NULL,
+       CONSTRAINT user_poll_poll_id_fkey FOREIGN KEY (poll_id)
+       REFERENCES poll (poll_id) MATCH SIMPLE 
+       ON DELETE CASCADE,
+       CONSTRAINT user_poll_user_account_id_fkey FOREIGN KEY (user_account_id)
+       REFERENCES user_account (user_account_id) MATCH SIMPLE 
+       ON DELETE CASCADE
+       );

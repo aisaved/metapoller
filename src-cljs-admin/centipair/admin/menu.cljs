@@ -2,6 +2,7 @@
   (:require [reagent.core :as reagent]
             [centipair.core.ui :as ui]
             [centipair.core.components.notifier :as notify]
+            [metapoller.polls :as polls]
             [secretary.core :as secretary :refer-macros [defroute]]
             [goog.events :as events]
             [goog.history.EventType :as EventType])
@@ -79,12 +80,14 @@
   (js/console.log "dashboard"))
 
 
-(defroute analytics "/poll/new" []
+(defroute poll-new "/poll/new" []
   (activate-side-menu-item "poll-new")
-  (js/console.log "poll new"))
+  (js/console.log "poll new")
+  (polls/render-poll-form)
+  )
 
 
-(defroute screening "/poll/list" []
+(defroute poll-list "/poll/list" []
   (activate-side-menu-item "poll-list")
   (js/console.log "poll list"))
   
