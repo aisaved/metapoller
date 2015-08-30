@@ -82,9 +82,13 @@
 
 (defroute poll-new "/poll/new" []
   (activate-side-menu-item "poll-new")
-  (js/console.log "poll new")
-  (polls/render-poll-form)
-  )
+  (polls/render-poll-form))
+
+
+(defroute poll-edit "/poll/edit/:id" [id]
+  (js/console.log "Poll edit")
+  (activate-side-menu-item "poll-new")
+  (polls/edit-poll-form id))
 
 
 (defroute poll-list "/poll/list" []

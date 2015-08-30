@@ -62,8 +62,9 @@ CREATE TABLE poll(
        poll_id serial PRIMARY KEY,
        poll_title VARCHAR (1024) NOT NULL,
        poll_hash_tag VARCHAR (1024) NOT NULL,
-       poll_description text UNIQUE NOT NULL,
-       poll_created_date TIMESTAMP NOT NULL
+       poll_description text,
+       poll_created_date TIMESTAMP NOT NULL,
+       poll_count integer DEFAULT 0
        );
 
 CREATE TABLE user_poll(

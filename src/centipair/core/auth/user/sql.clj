@@ -48,7 +48,7 @@
   [user-account auth-token]
   (if (:is_admin user-account)
     {:status-code 200 :message "success" :redirect "/admin" :auth-token auth-token}
-    {:status-code 200 :message "success" :redirect "/dashboard" :auth-token auth-token}))
+    {:status-code 200 :message "success" :redirect "/" :auth-token auth-token}))
 
 
 (def registration-success {:status-code 200 :message "Registration success"})

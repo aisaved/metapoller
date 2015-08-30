@@ -193,7 +193,7 @@
     (let [key (keyword (:id @field))]
       (if (not (nil? (key errors)))
         (swap! field assoc
-               :message (first (key errors))
+               :message (key errors)
                :class-name style/bootstrap-input-container-class-error)))))
 
 

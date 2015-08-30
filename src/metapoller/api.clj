@@ -13,16 +13,16 @@
                                 (if (= (:request-method (:request context)) :delete)
                                   true
                                   (poll-models/validate-poll-create (:params (:request context))))))
-  ;;:exists? (fn [context] (if (nil? source) true (page-exists?  source)))
+  :exists? (fn [context] (if (nil? source) true (poll-models/poll-exists?  source)))
   :handle-unprocessable-entity (fn [context] (:validation-result context))
   :post! (fn [context]
            {:created (poll-models/save-poll (:params (:request context)))})
   :handle-created (fn [context] (:created context))
   :delete! (fn [context]  (poll-models/delete-poll source))
   :delete-enacted? false
-  :handle-ok (fn [context] (if (nil? source) 
-                             (poll-models/get-all-polls (:params (:request context))) 
-                             (poll-models/get-poll source))))
+  :handle-ok (fn [context] (if (nil? source)
+                             (response/liberator-json-response (poll-models/get-all-polls (:params (:request context))))
+                             (response/liberator-json-response (poll-models/get-poll source)))))
 
 
 (defroutes admin-api-routes

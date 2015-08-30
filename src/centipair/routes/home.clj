@@ -10,15 +10,10 @@
     "home.html"))
 
 
-(defn dashboard []
-  (layout/render
-    "analytics/dashboard.html"))
-
 (defn csrf-token []
   (response/json-response {:token *anti-forgery-token*}))
 
 
 (defroutes home-routes
   (GET "/" [] (home-page))
-  (GET "/dashboard" [] (dashboard))
   (GET "/csrf" [] (csrf-token)))

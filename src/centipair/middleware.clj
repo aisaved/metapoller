@@ -36,7 +36,7 @@
     :handler is-admin?
     :on-error on-error}
    {:uri "/admin/api/*"
-    :handler logged-in?
+    :handler is-admin?
     :on-error on-error-api}])
 
 
