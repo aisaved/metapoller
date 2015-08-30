@@ -82,7 +82,7 @@
 
 (defroute poll-new "/poll/new" []
   (activate-side-menu-item "poll-new")
-  (polls/render-poll-form))
+  (polls/new-poll-form))
 
 
 (defroute poll-edit "/poll/edit/:id" [id]
