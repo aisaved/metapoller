@@ -4,6 +4,7 @@
         centipair.core.contrib.mail
         centipair.core.utilities.pagination)
   (:require
+   [centipair.core.utilities.pagination :refer [offset-limit]]
    [validateur.validation :refer :all]
    [centipair.core.contrib.time :as t]
    [korma.core :as korma :refer [insert
@@ -83,7 +84,13 @@
   (first (select poll (where {:poll_id (Integer. poll-id)}))))
 
 
+
 (defn get-all-polls
   [params]
-  
-  )
+  (let [offset-limit-params (offset-limit (:page params) (:per params))
+        total (count (select poll (fields :poll_id)))]
+    {:result (select poll (fields :poll_hash_tag :poll_title :poll_id)
+                     (offset (:offset offset-limit-params))
+                     (limit (:limit offset-limit-params)))
+     :total total
+     :page (if (nil? (:page params)) 0 (Integer. (:page params)))}))

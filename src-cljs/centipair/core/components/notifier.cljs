@@ -15,7 +15,7 @@
 
 (defn notify [code & [message]]
     (case code
-      201 (reset! notifier-state {:class "notify" :text ""})
+      201 (reset! notifier-state {:class "notify notify-loading" :text "Saved"})
       200 (reset! notifier-state {:class "notify" :text ""})
       102 (reset! notifier-state {:class "notify notify-loading" :text (if (nil? message) "Loading" message)})
       404 (reset! notifier-state {:class "notify notify-error" :text (if (nil? message) "Resource unavailable" message)})

@@ -4,6 +4,8 @@
             [centipair.core.ui :as ui]
             [centipair.core.utilities.ajax :as ajax]
             [centipair.core.utilities.spa :as spa]
+            [centipair.core.components.table :refer [data-table generate-table-rows]]
+            [centipair.core.components.notifier :refer [notify]]
             [reagent.core :as reagent]))
 
 (def poll-id (reagent/atom {:id "poll-id" :type "hidden"} ))
@@ -19,7 +21,8 @@
    poll-form-state
    "/admin/api/polls"
    [poll-id poll-title poll-hash-tag poll-description]
-   (fn [response] 
+   (fn [response]
+     (notify 102 "Poll saved")
      (spa/redirect (str "/poll/edit/" (:poll_id response))))))
 
 
@@ -74,3 +77,61 @@
 
 
 (defn list-polls [])
+
+
+(defn poll-headers
+  []
+  [:tr
+   [:th "Title"]
+   [:th "Hash Tag"]
+   [:th "Action"]
+   ])
+
+(defn delete-poll [id]
+  (ajax/delete
+   (str "/admin/polls/" id)
+   (fn [response]
+     
+     )))
+
+
+(def poll-data (reagent/atom {:page 0
+                      :id "admin-polls-table"
+                      :url "poll/list"
+                      :total 0
+                      :rows [:tr [:td "Loading"]]
+                      :headers (poll-headers)
+                      :create {:entity "poll"} 
+                      :delete {:action (fn [] (.log js/console "delete"))}
+                      :id-field "poll_id"
+                      :per 50
+                      }))
+
+(defn poll-row [row-data]
+  [:tr {:key (str "table-row-" ((keyword (:id-field @poll-data)) row-data)) :on-click #(spa/redirect (str "#/poll/edit/" (:poll_id row-data)))
+        :class "clickable"}
+   [:td {:key (str "table-column-1-" ((keyword (:id-field @poll-data)) row-data))} (:poll_title row-data)]
+   [:td {:key (str "table-column-2-" ((keyword (:id-field @poll-data)) row-data))} (str (:poll_hash_tag row-data))]
+   [:td {:key (str "table-column-3-" ((keyword (:id-field @poll-data)) row-data))}
+    [:a {:href "javascript:void(0)" :on-click (partial delete-poll (:poll_id row-data))
+         :class "fa fa-trash-o"
+         :title "Delete"
+         :key (str "row-delete-link-" ((keyword (:id-field @poll-data)) row-data)) }]]])
+
+(defn create-poll-data-list []
+  (data-table poll-data))
+
+
+(defn load-polls [page]
+  (swap! poll-data assoc :page (js/parseInt page))
+  (ajax/get-json 
+   (str "/admin/api/polls")
+   {:page (:page @poll-data)
+    :per (:per @poll-data)}
+   (fn [response]
+     (generate-table-rows response poll-data poll-row))))
+
+
+(defn render-poll-list [page]
+  (ui/render create-poll-data-list "content")
+  (load-polls page))

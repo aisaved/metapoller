@@ -9,7 +9,6 @@
 ;; :headers
 ;; :total
 
-(def per-page 20)
 
 
 (defn search-list-bar [table-data]
@@ -28,12 +27,14 @@
      [:div])])
 
 
-(defn page-numbers [total]
-  (if (> per-page total)
+(defn page-numbers [table-data]
+  (let [total (:total @table-data)
+        per-page (:per @table-data)]
+    (if (> per-page total)
     1
     (if (> (mod total per-page) 0)
       (+ 1 (quot total per-page))
-      (quot total per-page))))
+      (quot total per-page)))))
 
 
 (defn page-button [table-data page-count]
@@ -56,7 +57,7 @@
 
 
 (defn next-button-disabled? [table-data]
-  (>= (:page @table-data) (- (page-numbers (:total @table-data)) 1)))
+  (>= (:page @table-data) (- (page-numbers table-data) 1)))
 
 
 (defn next-button [table-data]
@@ -74,20 +75,19 @@
 
 
 (defn data-table-pagination [table-data]
-  [:nav {:key (str (:id table-data) "-nav")}
-   [:ul {:class "pagination" :key (str (:id table-data) "-pagination-container")}
+  [:nav {:key (str (:id @table-data) "-nav")}
+   [:ul {:class "pagination" :key (str (:id @table-data) "-pagination-container")}
     (previous-button table-data)
-    (doall (map (partial page-button table-data) (range (page-numbers (:total @table-data)))))
+    (doall (map (partial page-button table-data) (range (page-numbers table-data))))
     (next-button table-data)]])
 
 
 (defn data-table [table-data]
   [:div
-   (search-list-bar table-data)
+   ;;(search-list-bar table-data)
    [:table {:class "table table-hover "}
     [:thead (:headers @table-data) ]
-    [:tbody (:rows @table-data)]
-    ]
+    [:tbody (:rows @table-data)]]
    [:div {:key (str (:id @table-data) "-pagination")}
     (data-table-pagination table-data)]])
 

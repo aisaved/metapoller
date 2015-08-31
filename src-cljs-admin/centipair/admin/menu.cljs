@@ -14,7 +14,7 @@
 (def admin-menu (reagent/atom 
                  [{:label "Dashboard" :url "/dashboard" :id "dashboard" :active false}
                   {:label "New Poll" :url "/poll/new" :id "poll-new" :active false }
-                  {:label "Polls" :url "/poll/list" :id "poll-list" :active false }]))
+                  {:label "Polls" :url "/poll/list/0" :id "poll-list" :active false }]))
 
 
 (defn single-menu-component [each]
@@ -86,14 +86,13 @@
 
 
 (defroute poll-edit "/poll/edit/:id" [id]
-  (js/console.log "Poll edit")
   (activate-side-menu-item "poll-new")
   (polls/edit-poll-form id))
 
 
-(defroute poll-list "/poll/list" []
+(defroute poll-list "/poll/list/:page" [page]
   (activate-side-menu-item "poll-list")
-  (js/console.log "poll list"))
+  (polls/render-poll-list page))
   
 
 ;; Quick and dirty history configuration.
