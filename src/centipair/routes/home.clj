@@ -10,10 +10,17 @@
     "home.html"))
 
 
+(defn fbconnect-page []
+  (layout/render
+    "fbconnect.html"))
+
+
 (defn csrf-token []
   (response/json-response {:token *anti-forgery-token*}))
 
 
+
 (defroutes home-routes
   (GET "/" [] (home-page))
+  (GET "/fbconnect" [] (fbconnect-page))
   (GET "/csrf" [] (csrf-token)))

@@ -28,6 +28,11 @@
     <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,900' rel='stylesheet' type='text/css'> 
     <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    {% block body-scripts %}
+
+    {% endblock %}
+
+    <script src="/js/facebook.js"></script>
     
   </head>
   <body>
@@ -54,7 +59,6 @@
     <input type="hidden" value="{{csrf-token}}" id="__anti-forgery-token"/>
     <script src="/js/jquery-1.11.3.min.js"></script>
     <script src="/js/vendor/bootstrap.min.js"></script>
-    {%script "/assets/js/script.js" %}
      {% if dev %}
       <script src="https://fb.me/react-0.13.3.min.js"></script>
       {% script "/cljs/out/goog/base.js" %}
