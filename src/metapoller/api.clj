@@ -18,8 +18,12 @@
   :post! (fn [context]
            {:created (poll-models/save-poll (:params (:request context)))})
   :handle-created (fn [context] (:created context))
-  :delete! (fn [context]  (poll-models/delete-poll source))
-  :delete-enacted? false
+  :delete! (fn [context]  
+             (poll-models/delete-poll source))
+  :delete-enacted? (fn [context] (if (nil? source)
+                                   true
+                                   (not (poll-models/poll-exists?  source))))
+  
   :handle-ok (fn [context] (if (nil? source)
                              (response/liberator-json-response (poll-models/get-all-polls (:params (:request context))))
                              (response/liberator-json-response (poll-models/get-poll source)))))

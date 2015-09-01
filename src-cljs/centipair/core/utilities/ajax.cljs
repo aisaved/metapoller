@@ -1,14 +1,28 @@
 (ns centipair.core.utilities.ajax
   (:require [ajax.core :refer [GET POST DELETE json-request-format edn-request-format json-response-format]]
-            [centipair.core.utilities.dom :as dom])
+            [centipair.core.utilities.dom :as dom]
+            [centipair.core.ui :as ui]
+            [reagent.core :as reagent])
   (:use [centipair.core.components.notifier :only [notify]]
         [centipair.core.components.input :only [append-error]]))
 
 
-(defn error-handler [response]
-  (.log js/console "error occured")
+
+(def delete-object (reagent/atom {}))
+
+(defn handle-deleted
+  []
+  (do
+    (notify 102 "Deleted")
+    (-> (js/$ "#delete-modal") (.modal "hide"))
+    ((:callback @delete-object))))
+
+
+(defn error-handler [response [& function-]]
+  (.log js.console "error")
   (let [status (:status response)]
     (case status
+      202 (handle-deleted)
       401 (notify 401)
       403 (notify 403)
       404 (notify 404)
@@ -62,6 +76,40 @@
           :handler (partial success-handler function-handler)
           :headers {:X-CSRF-Token (dom/get-value "__anti-forgery-token")}
           :error-handler error-handler))
+
+(defn delete-request []
+  (delete
+   (:url @delete-object)
+   (fn [response]
+     (handle-deleted))))
+
+
+(defn delete-modal
+  []
+  [:div {:class "modal delete-modal" :tabIndex -1 :role "dialog" :aria-labelledby "delete-modal" :id "delete-modal"}
+   [:div {:class "modal-dialog modal-sm"}
+    [:div {:class "modal-content"} 
+     [:div {:class "modal-header"} [:h4 {:class "modal-title"} "Delete"]]
+     [:div {:class "modal-body"} "Are you sure you want to delete this?"]
+     [:div {:class "modal-footer"}
+      [:button {:type "button" :class "btn btn-default" :data-dismiss "modal"} "Cancel"]
+      [:button {:type "button" :class "btn btn-danger"
+                :on-click delete-request} "Delete"]]]]])
+
+
+(defn render-delete-modal
+  []
+  (ui/render delete-modal "spa-modal"))
+
+(defn delete-entity
+  [delete-map]
+  (do
+    (swap! delete-object assoc
+         :url (:url delete-map)
+         :callback (:callback delete-map))
+    (render-delete-modal)
+    (-> (js/$ "#delete-modal") (.modal {:show true}))))
+
 
 (defn set-value-type [field]
   (case (:value-type @field)

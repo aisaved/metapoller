@@ -107,13 +107,21 @@
                       :per 50
                       }))
 
+(declare load-polls)
+
+(defn refresh-poll-list
+  []
+  (load-polls (:page @poll-data)))
+
 (defn poll-row [row-data]
-  [:tr {:key (str "table-row-" ((keyword (:id-field @poll-data)) row-data)) :on-click #(spa/redirect (str "#/poll/edit/" (:poll_id row-data)))
+  [:tr {:key (str "table-row-" ((keyword (:id-field @poll-data)) row-data)) ;;:on-click #(spa/redirect (str "#/poll/edit/" (:poll_id row-data)))
         :class "clickable"}
    [:td {:key (str "table-column-1-" ((keyword (:id-field @poll-data)) row-data))} (:poll_title row-data)]
    [:td {:key (str "table-column-2-" ((keyword (:id-field @poll-data)) row-data))} (str (:poll_hash_tag row-data))]
    [:td {:key (str "table-column-3-" ((keyword (:id-field @poll-data)) row-data))}
-    [:a {:href "javascript:void(0)" :on-click (partial delete-poll (:poll_id row-data))
+    [:a {:href "javascript:void(0)" 
+         :on-click #(ajax/delete-entity {:url (str "/admin/api/polls/" (:poll_id row-data))
+                                        :callback refresh-poll-list})
          :class "fa fa-trash-o"
          :title "Delete"
          :key (str "row-delete-link-" ((keyword (:id-field @poll-data)) row-data)) }]]])

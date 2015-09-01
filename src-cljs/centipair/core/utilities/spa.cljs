@@ -1,4 +1,7 @@
-(ns centipair.core.utilities.spa)
+(ns centipair.core.utilities.spa
+  (:require [centipair.core.ui :as ui]
+            [centipair.core.utilities.ajax :as ajax]
+            [reagent.core :as reagent]))
 
 
 (defn home-page?
@@ -13,3 +16,4 @@
 (defn redirect [hash-url]
   (set! (.-hash js/window.location) 
         (str hash-url)))
+

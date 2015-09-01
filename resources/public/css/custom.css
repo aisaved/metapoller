@@ -86,3 +86,7 @@
 .btn-near{
     margin-right:5px;
 }
+
+.modal-backdrop {
+  z-index: -1;
+}
