@@ -38,9 +38,7 @@ window.fbAsyncInit = function() {
       xfbml      : true,
       version    : 'v2.4'
     });
-     FB.getLoginStatus(function(response) {
-	 statusChangeCallback(response);
-     });
+     
   };
 
 (function(d, s, id){
@@ -57,5 +55,3 @@ function facebookLogin(){
     }, {scope: 'public_profile,email'});
 
 }
-
-

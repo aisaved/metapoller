@@ -14,6 +14,10 @@
   (layout/render
     "fbconnect.html"))
 
+(defn chart-page []
+  (layout/render
+    "chart.html"))
+
 
 (defn csrf-token []
   (response/json-response {:token *anti-forgery-token*}))
@@ -23,4 +27,5 @@
 (defroutes home-routes
   (GET "/" [] (home-page))
   (GET "/fbconnect" [] (fbconnect-page))
+  (GET "/chart" [] (chart-page))
   (GET "/csrf" [] (csrf-token)))

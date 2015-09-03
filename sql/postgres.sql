@@ -9,6 +9,7 @@ CREATE TABLE user_account(
        active BOOLEAN NOT NULL default false,
        last_login TIMESTAMP);
 
+
 CREATE TABLE user_registration(
        user_registration_id serial PRIMARY KEY,
        user_account_id integer NOT NULL,
@@ -78,3 +79,13 @@ CREATE TABLE user_poll(
        REFERENCES user_account (user_account_id) MATCH SIMPLE 
        ON DELETE CASCADE
        );
+
+
+CREATE TABLE facebook_account(
+       facebook_account_id serial PRIMARY KEY,
+       user_account_id integer,
+       facebook_id varchar(20) NOT NULL,
+       facebook_email varchar(256),
+       facebook_name varchar(256),
+       facebook_auth_token varchar(1024)
+);

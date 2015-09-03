@@ -8,7 +8,47 @@ Home
 {% endblock %}
 
 {% block content %}
-<h4>Metapoller</h4>
+<div class="row">
+  <div class="col-md-2 themed-container themed-side-bar">
+    <h4>Trending Polls</h4>
+    <div>
+      <ul class="poll-list">
+	<li class="poll-list-item">#tonnyabbot</li>
+	<li class="poll-list-item">#billshorten</li>
+	<li class="poll-list-item">#offshawprocessing</li>
+	<li class="poll-list-item">#sckhird</li>
+	<li class="poll-list-item">#Truedetectives02</li>
+	<li class="poll-list-item">#adamgodes</li>
+	<li class="poll-list-item">#dusonheydon</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-10">
+    <div class="row">
+      <div class="col-md-12" id="chart-container">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+	<div class="themed-container themed-box">
+	  <h4>Vote with Twitter</h4>
+	  <p>Send a tweet to @metapoller with your vote. E.g:</p>
+	  <p>
+	    @metapoller #tonnyabbot #negative
+	    <br/>or<br/>
+	  @metapoller #tonnyabbot #positive
+	  </p>
+	</div>
+      </div>
+      <div class="col-md-6">
+	<div class="themed-container themed-box">
+	  <h4>Vote with Facebook</h4>
+	  <div id="fb-container"></div>
+	</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
 {% block page-scripts %}

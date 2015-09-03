@@ -13,15 +13,11 @@
     
     <!-- Bootstrap core CSS -->
     <link href="/css/themes/paper/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-social.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     
-    <style>
-      body {
-      padding-top: 50px;
-      padding-bottom: 20px;
-      }
-    </style>
+    
     
     
     
@@ -40,6 +36,7 @@
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
     <!-- Fixed navbar -->
+    <div class="metapoller-header"></div>
     
     <div id="notifier"></div>
     <div class="container">
@@ -47,6 +44,7 @@
 	{%block content%}
 	{%endblock%}
       </div>
+      
     </div>
     
     <div class="container">
@@ -59,6 +57,8 @@
     <input type="hidden" value="{{csrf-token}}" id="__anti-forgery-token"/>
     <script src="/js/jquery-1.11.3.min.js"></script>
     <script src="/js/vendor/bootstrap.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="/js/chart.js"></script>
      {% if dev %}
       <script src="https://fb.me/react-0.13.3.min.js"></script>
       {% script "/cljs/out/goog/base.js" %}

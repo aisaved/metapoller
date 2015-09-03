@@ -90,3 +90,37 @@
 .modal-backdrop {
   z-index: -1;
 }
+
+
+.poll-list-item {
+    list-style-type: none;
+    padding:5px 10px;
+}
+
+.poll-list{
+    padding: 0;
+    list-style-type: none;
+}
+
+.metapoller-header{
+    height:50px;
+}
+.themed-container{
+    background-color:#30ABF7;
+    color:#fff;
+}
+
+.themed-side-bar{
+    min-height:700px;
+}
+
+.themed-box{
+    padding-left:15px;
+    padding-right:15px;
+    padding-top:5px;
+    min-height:200px;
+}
+
+.themed-container h4{
+    color:#fff;
+}
