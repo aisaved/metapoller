@@ -114,9 +114,9 @@
   (load-polls (:page @poll-data)))
 
 (defn poll-row [row-data]
-  [:tr {:key (str "table-row-" ((keyword (:id-field @poll-data)) row-data)) ;;:on-click #(spa/redirect (str "#/poll/edit/" (:poll_id row-data)))
-        :class "clickable"}
-   [:td {:key (str "table-column-1-" ((keyword (:id-field @poll-data)) row-data))} (:poll_title row-data)]
+  [:tr {:key (str "table-row-" ((keyword (:id-field @poll-data)) row-data)) :class "clickable"}
+   [:td {:key (str "table-column-1-" ((keyword (:id-field @poll-data)) row-data))}
+    [:a {:href (str "#/poll/edit/" (:poll_id row-data)) :key (str "edit-link-" (:poll_id row-data)) } (:poll_title row-data)]]
    [:td {:key (str "table-column-2-" ((keyword (:id-field @poll-data)) row-data))} (str (:poll_hash_tag row-data))]
    [:td {:key (str "table-column-3-" ((keyword (:id-field @poll-data)) row-data))}
     [:a {:href "javascript:void(0)" 

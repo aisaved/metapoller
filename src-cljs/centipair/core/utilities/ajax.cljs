@@ -14,7 +14,7 @@
   []
   (do
     (notify 102 "Deleted")
-    (-> (js/$ "#delete-modal") (.modal "hide"))
+    (js/hideDeleteModal)
     ((:callback @delete-object))))
 
 
@@ -108,7 +108,7 @@
          :url (:url delete-map)
          :callback (:callback delete-map))
     (render-delete-modal)
-    (-> (js/$ "#delete-modal") (.modal {:show true}))))
+    (js/showDeleteModal)))
 
 
 (defn set-value-type [field]

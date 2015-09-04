@@ -87,5 +87,5 @@ CREATE TABLE facebook_account(
        facebook_id varchar(20) NOT NULL,
        facebook_email varchar(256),
        facebook_name varchar(256),
-       facebook_auth_token varchar(1024)
+       facebook_access_token varchar(1024)
 );

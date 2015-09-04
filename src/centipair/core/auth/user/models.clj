@@ -146,3 +146,8 @@
 (defn get-user
   [user-id]
   (user-model/get-user user-id))
+
+
+(defn update-password
+  [params]
+  (user-model/update-password params))

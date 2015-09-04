@@ -10,23 +10,24 @@
 
 (defn fb-status-callback
   [response]
-  
-  )
+  (.log js/console (aget response "status")))
 
 (defn fb-check-login
   []
-  (.getLoginStatus js/FB fb-status-callback))
+  (js/facebookCheckLogin fb-status-callback))
 
 
 
 (defn fb-login-callback
   [response]
-  (.log js/console (aget response "authResponse" "accessToken")))
+  (.log js/console (aget response "authResponse" "accessToken"))
+  ;;(.log js/console (aget response "authResponse" "accessToken"))
+  )
 
 
 (defn fb-login
   []
-  (.login js/FB fb-login-callback (clj->js {:scope  "public_profile,email"})))
+  (js/facebookLogin fb-login-callback))
 
 
 

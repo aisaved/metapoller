@@ -49,9 +49,10 @@ window.fbAsyncInit = function() {
     fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
-function facebookLogin(){
-    FB.login(function(response) {
-	console.log(response);
-    }, {scope: 'public_profile,email'});
 
+function facebookLogin(callback){
+    FB.login(callback, {scope: 'public_profile,email'});}
+
+function facebookCheckLogin(callback){
+     FB.getLoginStatus(callback);
 }

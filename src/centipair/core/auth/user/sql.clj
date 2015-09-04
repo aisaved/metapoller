@@ -212,6 +212,15 @@
         true))))
 
 
+
+(defn update-password
+  [params]
+  (korma/update user_account 
+                (set-fields
+                 {:password (crypt/encrypt-password (:password params))}) 
+                (where {:user_account_id (:user-id params)})))
+
+
 (defn commit-reset-password
   "Save password reset"
   [params]
