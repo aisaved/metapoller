@@ -20,6 +20,7 @@
             [centipair.core.auth.user.models :as user-models]
             [clj-http.client :as client]
             [cheshire.core :refer [parse-string]]
+            [centipair.core.contrib.cryptography :as crypto]
             ))
 
 
@@ -59,33 +60,38 @@
 
 (defn update-fb-account
   [fb-account]
-  (user-models/update-password {:password (:facebook_access_token fb-account)
-                                :user-id (:user_account_id fb-account)})
+  
   (korma/update facebook_account (set-fields {:facebook_access_token (:facebook_access_token fb-account)})
                 (where {:facebook_account_id (:facebook_account_id fb-account)})))
 
+
+(defn create-or-get-user-account
+  [email]
+  (let [user-account (user-models/select-user-email email)]
+    (if (nil? user-account)
+      (user-models/admin-save-user {:email email
+                                    :password (crypto/random-base64 32)
+                                    :is-admin false
+                                    :active true})
+      user-account)))
+
 (defn create-fb-account
   [fb-user-info]
-  (let [user-account (user-models/admin-save-user {:email (:email fb-user-info)
-                                :password (:access-token fb-user-info)
-                                :is-admin false
-                                :active true})]
+  (let [user-account (create-or-get-user-account (:email fb-user-info))]
     (insert facebook_account (values {:user_account_id (:user_account_id user-account)
                                       :facebook_id (:id fb-user-info)
                                       :facebook_name (:name fb-user-info)
                                       :facebook_email (:email fb-user-info)
                                       :facebook_access_token (:access-token fb-user-info)}))))
 
+
 (defn fb-login
-  "Access token is used as password and email as username"
-  [params]
-  (let [fb-user-info (get-fb-user-info (:access-token params))
+  [access-token]
+  (let [fb-user-info (get-fb-user-info access-token)
         fb-account (get-fb-account (:id fb-user-info))]
     (if (nil? fb-account)
-      (let [new-fb-account (create-fb-account params)]
-        (user-models/login {:username (:facebook_email new-fb-account)
-                            :password (:access-token params)}))
+      (let [new-fb-account (create-fb-account fb-user-info)]
+        (user-models/simulate-user-login (:user_account_id new-fb-account)))
       (do 
-        (update-fb-account (assoc fb-account :facebook_access_token (:access-token params)))
-        (user-models/login {:username (:facebook_email fb-account)
-                            :password (:access-token params)})))))
+        (update-fb-account (assoc fb-account :facebook_access_token access-token))
+        (user-models/simulate-user-login (:user_account_id fb-account))))))

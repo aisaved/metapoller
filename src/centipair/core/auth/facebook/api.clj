@@ -11,12 +11,13 @@
   :available-media-types ["application/json"]
   :allowed-methods [:post]
   :processable? (fn [context]
-                  (fb-models/check-fb-login (:params (:request context))))
+                  (fb-models/check-fb-login (get-in context [:request :params "access-token"])))
   :handle-unprocessable-entity (fn [context]
                                  (:validation-result context))
   :post! (fn [context]
-           {:login-result (fb-models/fb-login (:params (:request context)))})
+           {:login-result (fb-models/fb-login (get-in context [:request :params "access-token"]))})
   :handle-created (fn [context]
+                    (println (:login-result context))
                     (response/liberator-json-response-cookies 
                      (:login-result context)
                      {"auth-token" {:value (:auth-token (:login-result context))
@@ -24,5 +25,5 @@
                                     :path "/"
                                     :http-only true}})))
 
-(defroutes api-user-routes
+(defroutes api-facebook-routes
   (POST "/api/facebook/login" [] (api-fb-login)))

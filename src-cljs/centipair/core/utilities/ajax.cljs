@@ -35,6 +35,7 @@
   (function-handler response))
 
 (defn post [url params function-handler]
+  (.log js/console (clj->js params))
   (do
     (notify 102 "Loading")
     (POST url

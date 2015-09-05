@@ -151,3 +151,9 @@
 (defn update-password
   [params]
   (user-model/update-password params))
+
+
+(defn simulate-user-login
+  [user-id]
+  (let [user-account (user-model/get-user user-id)]
+    (user-model/create-user-session user-account)))

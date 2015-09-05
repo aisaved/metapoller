@@ -21,8 +21,9 @@
 (defn fb-login-callback
   [response]
   (.log js/console (aget response "authResponse" "accessToken"))
-  ;;(.log js/console (aget response "authResponse" "accessToken"))
-  )
+  (ajax/post "/api/facebook/login"
+             {:access-token (aget response "authResponse" "accessToken")}
+             (fn [response] (.log js/console response))))
 
 
 (defn fb-login

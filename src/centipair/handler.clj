@@ -5,6 +5,7 @@
             [metapoller.api :refer [admin-api-routes]]
             [centipair.core.auth.user.routes :refer [user-routes]]
             [centipair.core.auth.user.api :refer [api-user-routes]]
+            [centipair.core.auth.facebook.api :refer [api-facebook-routes]]
       
             [centipair.core.init :as init]
             
@@ -86,6 +87,7 @@
     (wrap-routes #'home-routes middleware/wrap-csrf)
     (wrap-routes #'admin-routes middleware/wrap-csrf)
     (wrap-routes #'admin-api-routes middleware/wrap-csrf)
+    (wrap-routes #'api-facebook-routes middleware/wrap-csrf)
     #'base-routes))
 
 (def app (middleware/wrap-base #'app-base))
