@@ -34,7 +34,7 @@ function statusChangeCallback(response) {
 
 window.fbAsyncInit = function() {
     FB.init({
-      appId      : '423821031159327',
+      appId      : '1612202385701412',
       xfbml      : true,
       version    : 'v2.4'
     });
@@ -51,7 +51,7 @@ window.fbAsyncInit = function() {
 
 
 function facebookLogin(callback){
-    FB.login(callback, {scope: 'public_profile,email'});}
+    FB.login(callback, {scope: 'public_profile,email,user_friends'});}
 
 function facebookCheckLogin(callback){
      FB.getLoginStatus(callback);

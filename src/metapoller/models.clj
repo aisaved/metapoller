@@ -7,6 +7,7 @@
    [centipair.core.utilities.pagination :refer [offset-limit]]
    [validateur.validation :refer :all]
    [centipair.core.contrib.time :as t]
+   [centipair.core.auth.user.models :as user-models]
    [korma.core :as korma :refer [insert
                                  delete
                                  select
@@ -94,3 +95,10 @@
                      (limit (:limit offset-limit-params)))
      :total total
      :page (if (nil? (:page params)) 0 (Integer. (:page params)))}))
+
+
+(defn user-poll-save
+  [request]
+  (let [user-account (user-models/get-authenticated-user request)]
+    
+    ))

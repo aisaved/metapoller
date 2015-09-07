@@ -28,6 +28,14 @@
                              (response/liberator-json-response (poll-models/get-all-polls (:params (:request context))))
                              (response/liberator-json-response (poll-models/get-poll source)))))
 
+(defresource api-user-poll [source]
+  :available-media-types ["application/json"]
+  :allowed-methods [:post]
+  :exists? (fn [context] (if (nil? source) true (poll-models/poll-exists?  source)))
+  :handle-unprocessable-entity (fn [context] (:validation-result context))
+  
+  )
+
 
 (defroutes admin-api-routes
   (ANY "/admin/api/polls" [] (admin-api-polls))

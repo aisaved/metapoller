@@ -18,12 +18,3 @@
 
 ;;sql db config
 (defonce sql-db-config (load-sql-db-config))
-
-
-(defn load-cassandra-config
-  []
-  (let [config-data (get-config)]
-    (get-in config-data [:db :cassandra])))
-
-
-(defonce cassandra-config (load-cassandra-config))

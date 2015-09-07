@@ -72,10 +72,20 @@ CREATE TABLE user_poll(
        user_poll_id serial PRIMARY KEY,
        poll_id integer NOT NULL,
        user_account_id integer NOT NULL,
+       user_poll_date TIMESTAMP NOT NULL,
        CONSTRAINT user_poll_poll_id_fkey FOREIGN KEY (poll_id)
        REFERENCES poll (poll_id) MATCH SIMPLE 
        ON DELETE CASCADE,
        CONSTRAINT user_poll_user_account_id_fkey FOREIGN KEY (user_account_id)
+       REFERENCES user_account (user_account_id) MATCH SIMPLE 
+       ON DELETE CASCADE
+       );
+
+CREATE TABLE user_poll_log(
+       user_poll_log_id serial PRIMARY KEY,
+       user_account_id integer NOT NULL,
+       last_poll_date TIMESTAMP NOT NULL,
+       CONSTRAINT user_poll_log_user_account_id_fkey FOREIGN KEY (user_account_id)
        REFERENCES user_account (user_account_id) MATCH SIMPLE 
        ON DELETE CASCADE
        );
@@ -89,3 +99,13 @@ CREATE TABLE facebook_account(
        facebook_name varchar(256),
        facebook_access_token varchar(1024)
 );
+
+
+CREATE TABLE twitter_account(
+       twitter_account_id serial PRIMARY KEY,
+       user_account_id integer,
+       twitter_id varchar(20) NOT NULL,
+       
+);
+
+

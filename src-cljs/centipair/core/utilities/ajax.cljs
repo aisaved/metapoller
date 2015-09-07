@@ -18,7 +18,7 @@
     ((:callback @delete-object))))
 
 
-(defn error-handler [response [& function-]]
+(defn error-handler [response]
   (.log js.console "error")
   (let [status (:status response)]
     (case status

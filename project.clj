@@ -37,6 +37,7 @@
                  [clj-http "2.0.0"]
                  [cheshire "5.5.0"]
                  [clj-time "0.11.0"]
+                 [twitter-api "0.7.8"]
                  [org.xerial.snappy/snappy-java "1.1.1.7"] 
                  [org.clojure/tools.reader "0.9.2"]
                  [org.clojure/clojurescript "1.7.107" :scope "provided"]
