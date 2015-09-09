@@ -87,7 +87,7 @@ CREATE TABLE user_poll(
 
 CREATE TABLE user_poll_log(
        user_poll_log_id serial PRIMARY KEY,
-       user_account_id integer NOT NULL,
+       user_account_id integer UNIQUE NOT NULL,
        next_poll_time TIMESTAMP NOT NULL,
        CONSTRAINT user_poll_log_user_account_id_fkey FOREIGN KEY (user_account_id)
        REFERENCES user_account (user_account_id) MATCH SIMPLE 

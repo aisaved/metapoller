@@ -30,10 +30,6 @@
 (defentity user_poll)
 (defentity user_poll_log)
 
-(defn poll-exists?
-  [poll-id]
-  (not (empty? (select poll (where {:poll_id (Integer. poll-id)})))))
-
 
 (defn unique-hashtag?
   [params]
@@ -88,15 +84,21 @@
   [poll-id]
   (first (select poll (where {:poll_id (Integer. poll-id)}))))
 
+
+(defn poll-exists?
+  [poll-id]
+  (not (nil? (get-poll poll-id))))
+
+
 (defn get-user-poll
   [poll-id user-id]
-  (first (select poll (where {:poll_id (Integer. poll-id)
-                              :user_account_id user-id}))))
+  (first (select user_poll (where {:poll_id (Integer. poll-id)
+                                   :user_account_id user-id}))))
 
 
 (defn get-user-poll-log
-  [user-id poll-id]
-  (first (select user_poll_log (where {:user-id user-id}))))
+  [user-id]
+  (first (select user_poll_log (where {:user_account_id user-id}))))
 
 (defn get-all-polls
   [params]
@@ -153,8 +155,16 @@
                          user_poll
                          (aggregate (sum :user_poll_vote) :user_poll_vote_total)
                          (aggregate (count :*)  :user_poll_count))]
-    (korma/update poll (set-fields {:poll_count (:user_poll_count user-poll-stats)
-                                    :poll_total (:user_poll_count user-poll-stats)}))))
+    (korma/update poll (set-fields {:poll_count (or (:user_poll_count user-poll-stats) 0)
+                                    :poll_total (or (:user_poll_count user-poll-stats) 0)}))))
+
+(defn insert-user-poll-log
+  [user-id]
+  (do
+    (delete user_poll_log (where {:user_account_id user-id}))
+    (insert user_poll_log (values {:user_account_id user-id
+                                   :next_poll_time (t/set-time-expiry 1)}))))
+
 
 (defn user-poll-save
   [poll-id request]
@@ -162,5 +172,6 @@
         poll-vote (get-in request [:params :poll-vote])]
     (let [user-poll (insert-user-poll poll-id (:user_account_id user-account) poll-vote)]
       (do
-        (update-poll-stats)
-        (insert-user-poll)))))
+        (update-poll-stats poll-id)
+        (insert-user-poll-log (:user_account_id user-account))
+        {:poll-id poll-id}))))
