@@ -160,8 +160,16 @@
 
 
 (defn user-status [request]
-  (println (get-in request [:params :query]))
-  (case (get-in request [:params :query])
-    "loggedin" {:result (logged-in? request)}
-    nil {:result "no params provided"}
-    {:result "unknown"}))
+  (let [user-account (get-authenticated-user request)
+        result {:logged-in? (not (nil? user-account))
+                :user user-account}]
+    (case (get-in request [:params :query])
+      "loggedin" {:result (logged-in? (:logged-in result))}
+      "profile" {:result result}
+      nil {:result "no params provided"}
+      {:result "unknown"})))
+
+(defn create-fb-user-profile
+  "Creates user profile from facebook account"
+  [fb-account]
+  (user-model/create-fb-account fb-account))

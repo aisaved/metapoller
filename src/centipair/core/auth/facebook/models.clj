@@ -84,6 +84,10 @@
                                       :facebook_email (:email fb-user-info)
                                       :facebook_access_token (:access-token fb-user-info)}))))
 
+(defn create-user-profile
+  [fb-account]
+  ;;(insert (user-models/))
+  )
 
 (defn fb-login
   [access-token]

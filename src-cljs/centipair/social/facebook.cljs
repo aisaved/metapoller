@@ -1,4 +1,4 @@
-(ns centipair.core.social.facebook
+(ns centipair.social.facebook
   (:require [centipair.core.utilities.ajax :as ajax]
             [centipair.core.ui :as ui]
             [reagent.core :as reagent]))
@@ -6,7 +6,7 @@
 
 
 (def fb-button-state (reagent/atom {:id "fb-button" :label "Login with facebook"}))
-
+(def logged-in-button-state (reagent/atom {:id "logged-in-button" :label "Logged in"}))
 
 (defn fb-status-callback
   [response]
@@ -44,7 +44,17 @@
   (ui/render fb-button "fb-container"))
 
 
+(defn check-login-status
+  []
+  (ajax/get-json "/api/user/status" {:query "user"}
+            (fn [response]
+              (if (:logged-in? (:result response))
+                (js/alert "Logged in")
+                (render-fb-button)
+                )
+              ))
+  )
 
 (defn fb-init
   []
-  (render-fb-button))
+  (check-login-status))
