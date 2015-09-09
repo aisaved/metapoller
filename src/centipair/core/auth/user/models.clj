@@ -157,3 +157,11 @@
   [user-id]
   (let [user-account (user-model/get-user user-id)]
     (user-model/create-user-session user-account)))
+
+
+(defn user-status [request]
+  (println (get-in request [:params :query]))
+  (case (get-in request [:params :query])
+    "loggedin" {:result (logged-in? request)}
+    nil {:result "no params provided"}
+    {:result "unknown"}))

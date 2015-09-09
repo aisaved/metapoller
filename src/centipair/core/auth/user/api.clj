@@ -55,8 +55,15 @@
                              (user-models/get-all-users (:params (:request context))) 
                              (user-models/get-user source))))
 
+(defresource api-user-status []
+  :available-media-types ["application/json"]
+  :allowed-methods [:get]
+  :handle-ok (fn [context] (user-models/user-status (:request context)))
+  )
+
 (defroutes api-user-routes
   (ANY "/admin/api/user" [] (admin-api-user))
   (ANY "/admin/api/user/:id" [id] (admin-api-user id))
+  (GET "/api/user/status" [] (api-user-status))
   (POST "/api/register" [] (api-user-register))
   (POST "/api/login" [] (api-user-login)))
