@@ -31,9 +31,12 @@
 (defresource api-user-poll [source]
   :available-media-types ["application/json"]
   :allowed-methods [:post]
+  :processable? (fn [context] ) 
   :exists? (fn [context] (if (nil? source) true (poll-models/poll-exists?  source)))
   :handle-unprocessable-entity (fn [context] (:validation-result context))
-  
+  :post! (fn [context]
+           {:created (poll-models/user-poll-save (:params (:request context)))})
+  :handle-created (fn [context] (:created context))
   )
 
 

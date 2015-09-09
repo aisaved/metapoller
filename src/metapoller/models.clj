@@ -24,7 +24,8 @@
                                  with]]))
 
 (defentity poll)
-
+(defentity user_poll)
+(defentity user_poll_log)
 
 (defn poll-exists?
   [poll-id]
@@ -85,6 +86,9 @@
   (first (select poll (where {:poll_id (Integer. poll-id)}))))
 
 
+(defn get-user-poll-log
+  [user-id]
+  (first (select (user_poll_log (where {:user-id user-id})))))
 
 (defn get-all-polls
   [params]
@@ -97,8 +101,23 @@
      :page (if (nil? (:page params)) 0 (Integer. (:page params)))}))
 
 
+(defn valid-poll-interval?
+  [poll-log]
+  
+  )
+
+(defn validate-user-poll
+  [poll-id request]
+  (let [user-account (user-models/get-authenticated-user request)
+        ;;user-poll (get-poll poll-id)
+        poll-log (get-user-poll-log (:user_account_id user-account))]
+    (if (nil? poll-log)
+      true
+      (valid-poll-log? poll-log)
+      )))
+
 (defn user-poll-save
-  [request]
+  [poll-id request]
   (let [user-account (user-models/get-authenticated-user request)]
     
     ))
