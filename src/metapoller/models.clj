@@ -21,7 +21,10 @@
                                  pk
                                  has-many
                                  join
-                                 with]]))
+                                 with
+
+                                 aggregate
+                                 ]]))
 
 (defentity poll)
 (defentity user_poll)
@@ -85,10 +88,15 @@
   [poll-id]
   (first (select poll (where {:poll_id (Integer. poll-id)}))))
 
+(defn get-user-poll
+  [poll-id user-id]
+  (first (select poll (where {:poll_id (Integer. poll-id)
+                              :user_account_id user-id}))))
+
 
 (defn get-user-poll-log
-  [user-id]
-  (first (select (user_poll_log (where {:user-id user-id})))))
+  [user-id poll-id]
+  (first (select user_poll_log (where {:user-id user-id}))))
 
 (defn get-all-polls
   [params]
@@ -101,23 +109,58 @@
      :page (if (nil? (:page params)) 0 (Integer. (:page params)))}))
 
 
+(defn valid-vote?
+  [poll-vote]
+  (let [vote (Integer. poll-vote)]
+    (if (nil? poll-vote)
+      false
+      (or (= 1 vote) (= -1 vote)))))
+
 (defn valid-poll-interval?
   [poll-log]
-  
-  )
+  (if (t/time-expired? (:next_poll_time poll-log))
+    true
+    false))
+
 
 (defn validate-user-poll
   [poll-id request]
   (let [user-account (user-models/get-authenticated-user request)
-        ;;user-poll (get-poll poll-id)
-        poll-log (get-user-poll-log (:user_account_id user-account))]
-    (if (nil? poll-log)
-      true
-      (valid-poll-log? poll-log)
-      )))
+        poll-log (get-user-poll-log (:user_account_id user-account))
+        user-poll (get-user-poll poll-id (:user_account_id user-account))]
+    (if (nil? user-poll)
+      (if (nil? poll-log)
+        true
+        (if (valid-poll-interval? poll-log)
+          (if (valid-vote? (get-in request [:params :poll-vote]))
+            true
+            [false {:validation-result {:errors {:poll-id "Invalid vote"}}}])
+          [false {:validation-result {:errors {:poll-id "You can only do one poll per hour"}}}]))
+      [false {:validation-result {:errors {:poll-id "You have already voted for this poll"}}} ])))
+
+
+
+(defn insert-user-poll
+  [poll-id user-id poll-vote]
+  (insert user_poll (values {:user_poll_id (Integer. poll-id)
+                             :poll_id (Integer. poll-id)
+                             :user_account_id user-id
+                             :user_poll_vote (Integer. poll-vote)})))
+
+(defn update-poll-stats
+  [poll-id]
+  (let [user-poll-stats (select
+                         user_poll
+                         (aggregate (sum :user_poll_vote) :user_poll_vote_total)
+                         (aggregate (count :*)  :user_poll_count))]
+    (korma/update poll (set-fields {:poll_count (:user_poll_count user-poll-stats)
+                                    :poll_total (:user_poll_count user-poll-stats)}))))
 
 (defn user-poll-save
   [poll-id request]
-  (let [user-account (user-models/get-authenticated-user request)]
-    
-    ))
+  (let [user-account (user-models/get-authenticated-user request)
+        poll-vote (get-in request [:params :poll-vote])]
+    (let [user-poll (insert-user-poll poll-id (:user_account_id user-account) poll-vote)]
+      (do
+        (update-poll-stats)
+        (insert-user-poll)))))

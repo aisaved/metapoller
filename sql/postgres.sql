@@ -65,14 +65,18 @@ CREATE TABLE poll(
        poll_hash_tag VARCHAR (1024) NOT NULL,
        poll_description text,
        poll_created_date TIMESTAMP NOT NULL,
-       poll_count integer DEFAULT 0
+       poll_count integer DEFAULT 0,
+       poll_total integer NOT NULL DEFAULT 0
        );
+
 
 CREATE TABLE user_poll(
        user_poll_id serial PRIMARY KEY,
        poll_id integer NOT NULL,
        user_account_id integer NOT NULL,
-       user_poll_date TIMESTAMP NOT NULL,
+       user_poll_date TIMESTAMP NOT NULL DEFAULT now(),
+       user_poll_vote integer NOT NULL,
+       CHECK (user_poll_vote=1 OR user_poll_vote=-1),
        CONSTRAINT user_poll_poll_id_fkey FOREIGN KEY (poll_id)
        REFERENCES poll (poll_id) MATCH SIMPLE 
        ON DELETE CASCADE,
@@ -84,7 +88,7 @@ CREATE TABLE user_poll(
 CREATE TABLE user_poll_log(
        user_poll_log_id serial PRIMARY KEY,
        user_account_id integer NOT NULL,
-       last_poll_date TIMESTAMP NOT NULL,
+       next_poll_time TIMESTAMP NOT NULL,
        CONSTRAINT user_poll_log_user_account_id_fkey FOREIGN KEY (user_account_id)
        REFERENCES user_account (user_account_id) MATCH SIMPLE 
        ON DELETE CASCADE

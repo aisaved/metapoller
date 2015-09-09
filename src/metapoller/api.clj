@@ -31,16 +31,16 @@
 (defresource api-user-poll [source]
   :available-media-types ["application/json"]
   :allowed-methods [:post]
-  :processable? (fn [context] ) 
+  :processable? (fn [context] (poll-models/validate-user-poll source (:request context)))
   :exists? (fn [context] (if (nil? source) true (poll-models/poll-exists?  source)))
   :handle-unprocessable-entity (fn [context] (:validation-result context))
   :post! (fn [context]
            {:created (poll-models/user-poll-save (:params (:request context)))})
-  :handle-created (fn [context] (:created context))
-  )
+  :handle-created (fn [context] (:created context)))
 
 
 (defroutes admin-api-routes
+  (POST "/api/poll/:id" [id] (api-user-poll id))
   (ANY "/admin/api/polls" [] (admin-api-polls))
   (ANY "/admin/api/polls/:id" [id] (admin-api-polls id)))
 
