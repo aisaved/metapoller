@@ -43,12 +43,16 @@
 (def user-inactive-error {:status-code 422 :errors {:username ["This account is inactive"]}})
 
 
+(defn get-user-profile
+  [user-id]
+  (first (select user_profile (where {:user_account_id user-id}))))
+
 (defn login-success
   "What happens after a successful login"
   [user-account auth-token]
   (if (:is_admin user-account)
-    {:status-code 200 :message "success" :redirect "/admin" :auth-token auth-token}
-    {:status-code 200 :message "success" :redirect "/" :auth-token auth-token}))
+    {:status-code 200 :message "success" :redirect "/admin" :auth-token auth-token :result {:loggedin true :profile (get-user-profile (:user_account_id user-account))}}
+    {:status-code 200 :message "success" :redirect "/" :auth-token auth-token :result {:loggedin true :profile (get-user-profile (:user_account_id user-account))}}))
 
 
 (def registration-success {:status-code 200 :message "Registration success"})
@@ -286,3 +290,12 @@
   (first (select user_account 
                  (fields :email :active :is_admin :user_account_id)
                  (where {:user_account_id (Integer. user-id)}))))
+
+
+(defn create-fb-user-profile
+  [fb-account]
+  (let [user-profile (get-user-profile (:user_account_id fb-account))]
+    (if (nil? user-profile)
+      (insert user_profile (values {:user_account_id (:user_account_id fb-account)
+                                    :full_name (:facebook_name fb-account)}))
+      user-profile)))

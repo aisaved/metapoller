@@ -24,6 +24,7 @@ CREATE TABLE user_registration(
 CREATE TABLE user_profile(
        user_profile_id serial PRIMARY KEY,
        user_account_id integer NOT NULL,
+       full_name VARCHAR (400),
        first_name VARCHAR (100),
        middle_name VARCHAR (100),
        last_name VARCHAR (100),

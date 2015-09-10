@@ -17,7 +17,6 @@
   :post! (fn [context]
            {:login-result (fb-models/fb-login (get-in context [:request :params "access-token"]))})
   :handle-created (fn [context]
-                    (println (:login-result context))
                     (response/liberator-json-response-cookies 
                      (:login-result context)
                      {"auth-token" {:value (:auth-token (:login-result context))

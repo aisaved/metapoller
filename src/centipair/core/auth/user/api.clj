@@ -58,8 +58,7 @@
 (defresource api-user-status []
   :available-media-types ["application/json"]
   :allowed-methods [:get]
-  :handle-ok (fn [context] (user-models/user-status (:request context)))
-  )
+  :handle-ok (fn [context] (user-models/user-status (:request context))))
 
 (defroutes api-user-routes
   (ANY "/admin/api/user" [] (admin-api-user))

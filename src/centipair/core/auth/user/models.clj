@@ -159,10 +159,15 @@
     (user-model/create-user-session user-account)))
 
 
+(defn get-user-profile
+  [user-id]
+  (user-model/get-user-profile user-id))
+
+
 (defn user-status [request]
   (let [user-account (get-authenticated-user request)
-        result {:logged-in? (not (nil? user-account))
-                :user user-account}]
+        result {:loggedin (not (nil? user-account))
+                :profile (if (not (nil? user-account)) (get-user-profile (:user_account_id user-account)))}]
     (case (get-in request [:params :query])
       "loggedin" {:result (logged-in? (:logged-in result))}
       "profile" {:result result}
@@ -172,4 +177,4 @@
 (defn create-fb-user-profile
   "Creates user profile from facebook account"
   [fb-account]
-  (user-model/create-fb-account fb-account))
+  (user-model/create-fb-user-profile fb-account))

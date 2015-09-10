@@ -84,10 +84,6 @@
                                       :facebook_email (:email fb-user-info)
                                       :facebook_access_token (:access-token fb-user-info)}))))
 
-(defn create-user-profile
-  [fb-account]
-  ;;(insert (user-models/))
-  )
 
 (defn fb-login
   [access-token]
@@ -95,7 +91,9 @@
         fb-account (get-fb-account (:id fb-user-info))]
     (if (nil? fb-account)
       (let [new-fb-account (create-fb-account fb-user-info)]
+        (user-models/create-fb-user-profile new-fb-account)
         (user-models/simulate-user-login (:user_account_id new-fb-account)))
       (do 
         (update-fb-account (assoc fb-account :facebook_access_token access-token))
+        (user-models/create-fb-user-profile fb-account)
         (user-models/simulate-user-login (:user_account_id fb-account))))))

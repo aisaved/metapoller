@@ -143,3 +143,9 @@
 (defn render-poll-list [page]
   (ui/render create-poll-data-list "content")
   (load-polls page))
+
+
+
+(defn init-poll []
+  
+  )
