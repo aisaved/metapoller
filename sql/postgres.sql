@@ -109,8 +109,7 @@ CREATE TABLE facebook_account(
 CREATE TABLE twitter_account(
        twitter_account_id serial PRIMARY KEY,
        user_account_id integer,
-       twitter_id varchar(20) NOT NULL,
-       
+       twitter_id varchar(20) NOT NULL
 );
 
 
