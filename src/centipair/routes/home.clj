@@ -14,9 +14,9 @@
   (layout/render
     "fbconnect.html"))
 
-(defn chart-page []
+(defn poll-page [hash-tag]
   (layout/render
-    "chart.html"))
+    "poll.html"))
 
 
 (defn csrf-token []
@@ -26,6 +26,6 @@
 
 (defroutes home-routes
   (GET "/" [] (home-page))
+  (GET "/poll/:hash-tag" [hash-tag] (poll-page hash-tag))
   (GET "/fbconnect" [] (fbconnect-page))
-  (GET "/chart" [] (chart-page))
   (GET "/csrf" [] (csrf-token)))
