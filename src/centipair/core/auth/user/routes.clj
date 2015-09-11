@@ -1,7 +1,8 @@
 (ns centipair.core.auth.user.routes
   (:require [compojure.core :refer :all]
             [centipair.layout :as layout]
-            [centipair.core.auth.user.models :as user-model]))
+            [centipair.core.auth.user.models :as user-model]
+            [ring.util.response :refer [redirect]]))
 
 
 (defn register-page
@@ -14,6 +15,10 @@
   []
   (layout/render "core/user/login.html"))
 
+(defn logout [request]
+  (user-model/logout-user request)
+  (redirect "/"))
+
 (defn activate
   "Account activation handler"
   [registration-key]
@@ -25,6 +30,7 @@
 
 
 (defroutes user-routes 
+  (GET "/logout" request (logout request))
   (GET "/register" [] (register-page))
-  (GET "/login" [] (login-page))
-  (GET "/activate/:key" [key] (activate key)))
+  (GET "/login" [] (login-page)))
+

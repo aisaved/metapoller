@@ -5,22 +5,10 @@
 
 
 
-(def fb-button-state (reagent/atom {:id "fb-button" :label "Login with facebook"}))
-(def logged-in-button-state (reagent/atom {:id "logged-in-button" :label "Logged in"}))
+(def fb-button-state (reagent/atom {:id "fb-button" :label ""}))
 
-
-(defn loggedin-button
-  []
-  [:a {:class "btn btn-social btn-facebook"}
-   [:i {:class "fa fa-facebook"}] (:label @logged-in-button-state)])
-
-
-
-
-(defn render-loggedin-button [response]
-  
-  )
-
+(defn set-loggedin-button [user-info]
+  (swap! fb-button-state assoc :label (:full_name user-info)))
 
 (defn fb-status-callback
   [response]
@@ -34,10 +22,10 @@
 
 (defn fb-login-callback
   [response]
-  (.log js/console (aget response "authResponse" "accessToken"))
   (ajax/post "/api/facebook/login"
              {:access-token (aget response "authResponse" "accessToken")}
-             (fn [response] (.log js/console response))))
+             (fn [response]
+               (set-loggedin-button (:profile (:result response))))))
 
 
 (defn fb-login
@@ -55,18 +43,23 @@
 
 
 
+(defn set-login-button
+  []
+  (swap! fb-button-state assoc :label "Login with facebook"))
+
+
 (defn render-fb-button
   []
   (ui/render fb-button "fb-container"))
-
 
 (defn check-login-status
   []
   (ajax/get-json "/api/user/status" {:query "profile"}
             (fn [response]
               (if (:loggedin (:result response))
-                (js/alert "Logged in")
-                (render-fb-button)))))
+                (set-loggedin-button (:profile (:result response)))
+                (set-login-button))
+              (render-fb-button))))
 
 (defn fb-init
   []

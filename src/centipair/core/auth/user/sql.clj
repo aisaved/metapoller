@@ -152,9 +152,7 @@
 
 (defn delete-session [auth-token]
   (do
-    (delete user_session (where {:auth_token auth-token}))
-    ;;(delete-cookies :auth-token)
-    )
+    (delete user_session (where {:auth_token auth-token})))
   {:status-code 301})
 
 

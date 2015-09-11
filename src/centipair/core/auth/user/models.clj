@@ -178,3 +178,7 @@
   "Creates user profile from facebook account"
   [fb-account]
   (user-model/create-fb-user-profile fb-account))
+
+(defn logout-user
+  [request]
+  (user-model/logout-user request))
