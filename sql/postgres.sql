@@ -95,6 +95,16 @@ CREATE TABLE user_poll_log(
        ON DELETE CASCADE
        );
 
+CREATE TABLE poll_stats(
+       poll_stats_id serail PRIMARY KEY,
+       poll_id integer NOT NULL,
+       poll_points decimal(3,1),
+       poll_stats_time TIMESTAMP NOT NULL DEFAULT now(),
+       CONSTRAINT user_poll_poll_id_fkey FOREIGN KEY (poll_id)
+       REFERENCES poll (poll_id) MATCH SIMPLE 
+       ON DELETE CASCADE
+)
+
 
 CREATE TABLE facebook_account(
        facebook_account_id serial PRIMARY KEY,

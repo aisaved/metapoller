@@ -3,6 +3,7 @@
             [compojure.core :refer [defroutes GET]]
             [clojure.java.io :as io]
             [centipair.core.contrib.response :as response]
+            [metapoller.models :as meta-models]
             [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]))
 
 (defn home-page []
@@ -15,8 +16,11 @@
     "fbconnect.html"))
 
 (defn poll-page [hash-tag]
-  (layout/render
-    "poll.html"))
+  (let [poll-data (meta-models/get-poll-hash hash-tag)]
+    (if (nil? poll-data)
+      (layout/render "404.html")
+      (layout/render
+            "poll.html" poll-data))))
 
 
 (defn csrf-token []

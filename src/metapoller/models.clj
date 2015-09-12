@@ -84,10 +84,19 @@
   [poll-id]
   (first (select poll (where {:poll_id (Integer. poll-id)}))))
 
+(defn get-poll-hash
+  [hash]
+  (first (select poll (where {:poll_hash_tag hash}))))
+
 
 (defn poll-exists?
   [poll-id]
   (not (nil? (get-poll poll-id))))
+
+
+(defn poll-hash-exists?
+  [hash]
+  (not (nil? (get-poll-hash hash))))
 
 
 (defn get-user-poll

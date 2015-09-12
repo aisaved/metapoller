@@ -10,6 +10,6 @@
 (defn ^:export init! []
   (do
     (notifier/render-notifier-component)
-    ;;xs(csrf/fetch-csrf-token)
-    (fb/fb-init)
+    ;;(csrf/fetch-csrf-token)
+    ;;(fb/fb-init)
     ))

@@ -13,7 +13,7 @@
                                 (if (= (:request-method (:request context)) :delete)
                                   true
                                   (poll-models/validate-poll-create (:params (:request context))))))
-  :exists? (fn [context] (if (nil? source) true (poll-models/poll-exists?  source)))
+  
   :handle-unprocessable-entity (fn [context] (:validation-result context))
   :post! (fn [context]
            {:created (poll-models/save-poll (:params (:request context)))})
@@ -28,20 +28,37 @@
                              (response/liberator-json-response (poll-models/get-all-polls (:params (:request context))))
                              (response/liberator-json-response (poll-models/get-poll source)))))
 
+
 (defresource api-user-poll [source]
   :available-media-types ["application/json"]
-  :allowed-methods [:post]
-  :processable? (fn [context] (poll-models/validate-user-poll source (:request context)))
+  :allowed-methods [:post :get]
+  :processable? (fn [context]
+                  (if (= (:request-method (:request context)) :get)
+                  true
+                  (poll-models/validate-user-poll source (:request context)))
+                  )
   :exists? (fn [context] (if (nil? source) true (poll-models/poll-exists?  source)))
   :handle-unprocessable-entity (fn [context] (:validation-result context))
   :post! (fn [context]
                {:created (poll-models/user-poll-save source (:request context))})
   
-  :handle-created (fn [context] (:created context)))
+  :handle-created (fn [context] (:created context))
+  :handle-ok (fn [context]
+               (response/liberator-json-response (poll-models/get-poll source))))
+
+(defresource api-poll-hash [hash]
+  :available-media-types ["application/json"]
+  :allowed-methods [:get]
+  :exists? (fn [context] (if (nil? hash) true (poll-models/poll-hash-exists?  hash)))
+  :handle-ok (fn [context] (response/liberator-json-response (poll-models/get-poll-hash hash)))
+  
+  )
+
 
 
 (defroutes admin-api-routes
-  (POST "/api/poll/:id" [id] (api-user-poll id))
+  (ANY "/api/poll/hash/:hash" [hash] (api-poll-hash hash))
+  (ANY "/api/poll/:id" [id] (api-user-poll id))
   (ANY "/admin/api/polls" [] (admin-api-polls))
   (ANY "/admin/api/polls/:id" [id] (admin-api-polls id)))
 
