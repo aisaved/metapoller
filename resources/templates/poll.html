@@ -9,32 +9,19 @@
 
 {% block content %}
 <div class="row">
-  <input type="hidden" id="poll-id" value="{{poll_id}}"/>
-  <div class="col-md-2 themed-container themed-side-bar">
-    <h4>Trending Polls</h4>
-    <div>
-      <ul class="poll-list">
-	<li class="poll-list-item">#tonnyabbot</li>
-	<li class="poll-list-item">#billshorten</li>
-	<li class="poll-list-item">#offshawprocessing</li>
-	<li class="poll-list-item">#sckhird</li>
-	<li class="poll-list-item">#Truedetectives02</li>
-	<li class="poll-list-item">#adamgodes</li>
-	<li class="poll-list-item">#dusonheydon</li>
-      </ul>
-    </div>
+  <div class="col-md-12" id="chart-container">
   </div>
-  <div class="col-md-10">
-    <div class="row">
-      <div class="col-md-12" id="chart-container">
-      </div>
-    </div>
-    
 </div>
-
+<div class="row">
+  <div class="col-md-12" id="poll-container">
+    
+  </div>
+</div>
+<input type="hidden" id="poll-id" value="{{poll-data.poll_id}}"/>
 {% endblock %}
 {% block page-scripts %}
-
-
+<script>
+centipair.registry.load_function("render-poll-ui");
+</script>
 {% endblock %}
 

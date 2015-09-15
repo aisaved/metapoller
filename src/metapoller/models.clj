@@ -184,3 +184,7 @@
         (update-poll-stats poll-id)
         (insert-user-poll-log (:user_account_id user-account))
         {:poll-id poll-id}))))
+
+(defn get-trending-polls
+  []
+  (select poll (limit 10)))

@@ -124,3 +124,8 @@
 .themed-container h4{
     color:#fff;
 }
+
+.themed-side-bar a{
+    color:#fff;
+    font-weight:bold;
+}

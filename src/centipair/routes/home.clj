@@ -7,8 +7,9 @@
             [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]))
 
 (defn home-page []
-  (layout/render
-    "home.html"))
+  (let [trending-polls (meta-models/get-trending-polls)]
+    (layout/render
+    "home.html" {:trending-polls trending-polls})))
 
 
 (defn fbconnect-page []
@@ -16,11 +17,13 @@
     "fbconnect.html"))
 
 (defn poll-page [hash-tag]
-  (let [poll-data (meta-models/get-poll-hash hash-tag)]
+  (let [poll-data (meta-models/get-poll-hash hash-tag)
+        trending-polls (meta-models/get-trending-polls)]
     (if (nil? poll-data)
       (layout/render "404.html")
       (layout/render
-            "poll.html" poll-data))))
+            "poll.html" {:trending-polls trending-polls
+                         :poll-data poll-data}))))
 
 
 (defn csrf-token []

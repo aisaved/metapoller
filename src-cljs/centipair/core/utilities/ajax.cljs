@@ -42,7 +42,7 @@
           :params params
           :handler (partial success-handler function-handler)
           :error-handler error-handler
-          :format (json-request-format)
+          ;;:format (json-request-format)
           :headers {:X-CSRF-Token (dom/get-value "__anti-forgery-token")}
           :response-format (json-response-format {:keywords? true}))))
 

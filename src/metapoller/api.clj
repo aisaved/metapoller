@@ -35,8 +35,7 @@
   :processable? (fn [context]
                   (if (= (:request-method (:request context)) :get)
                   true
-                  (poll-models/validate-user-poll source (:request context)))
-                  )
+                  (poll-models/validate-user-poll source (:request context))))
   :exists? (fn [context] (if (nil? source) true (poll-models/poll-exists?  source)))
   :handle-unprocessable-entity (fn [context] (:validation-result context))
   :post! (fn [context]

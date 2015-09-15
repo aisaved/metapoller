@@ -41,8 +41,26 @@
     <div id="notifier"></div>
     <div class="container">
       <div>
-	{%block content%}
-	{%endblock%}
+	<div class="row">
+	  <div class="col-md-2 themed-container themed-side-bar">
+	    <h4>Trending Polls</h4>
+	    <div>
+	      <ul class="poll-list">
+		{% for poll in trending-polls %}
+		<li class="poll-list-item"><a href="/poll/{{poll.poll_hash_tag}}">#{{poll.poll_hash_tag}}</a></li>
+		{% endfor %}
+		
+	      </ul>
+	    </div>
+	  </div>
+	  <div class="col-md-10">
+	    {%block content%}
+	    {%endblock%}
+	   
+	  </div>
+	</div>
+	
+	
       </div>
       
     </div>
