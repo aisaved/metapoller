@@ -37,7 +37,11 @@
     :on-error on-error}
    {:uri "/admin/api/*"
     :handler is-admin?
-    :on-error on-error-api}])
+    :on-error on-error-api}
+   {:uri "/private/api/*"
+    :handler logged-in?
+    :on-error on-error-api}
+   ])
 
 
 (defn wrap-servlet-context [handler]

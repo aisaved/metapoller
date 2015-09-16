@@ -29,6 +29,7 @@
 (defentity poll)
 (defentity user_poll)
 (defentity user_poll_log)
+(defentity poll_stats)
 
 
 (defn unique-hashtag?
@@ -160,12 +161,25 @@
 
 (defn update-poll-stats
   [poll-id]
-  (let [user-poll-stats (select
-                         user_poll
-                         (aggregate (sum :user_poll_vote) :user_poll_vote_total)
-                         (aggregate (count :*)  :user_poll_count))]
-    (korma/update poll (set-fields {:poll_count (or (:user_poll_count user-poll-stats) 0)
-                                    :poll_total (or (:user_poll_count user-poll-stats) 0)}))))
+  (let [user-poll-stats (first(select
+                               user_poll
+                               (aggregate (sum :user_poll_vote) :user_poll_vote_total)
+                               (aggregate (count :*)  :user_poll_count)
+                               (where {:poll_id (Integer. poll-id)})))
+        poll-count (or (:user_poll_count user-poll-stats) 0)
+        poll-total (or (:user_poll_count user-poll-stats) 0)
+        poll-points (if (> poll-count 0) (/ poll-total poll-count) 0)]
+    (println user-poll-stats)
+    (println (:user_poll_count user-poll-stats))
+    (println (or (:user_poll_count user-poll-stats) 0))
+    (do (korma/insert poll_stats (values {:poll_id (Integer. poll-id)
+                                          :poll_count poll-count
+                                          :poll_total poll-total
+                                          :poll_points poll-points}))
+        (korma/update poll (set-fields {:poll_count poll-count
+                                        :poll_total poll-total
+                                        :poll_points poll-points})
+                      (where {:poll_id (Integer. poll-id)})))))
 
 (defn insert-user-poll-log
   [user-id]
@@ -188,3 +202,15 @@
 (defn get-trending-polls
   []
   (select poll (limit 10)))
+
+
+(defn to-high-charts
+  [poll-stat]
+  (assoc poll-stat :poll_stats_time (t/highchart-date-format (:poll_stats_time poll-stat))))
+
+(defn get-poll-stats
+  [poll-id]
+  (let [poll-data (get-poll poll-id)
+        poll-stats (map to-high-charts (select poll_stats (where {:poll_id (Integer. poll-id)} )))]
+    {:poll-data poll-data
+     :poll-stats poll-stats}))

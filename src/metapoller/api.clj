@@ -49,15 +49,22 @@
   :available-media-types ["application/json"]
   :allowed-methods [:get]
   :exists? (fn [context] (if (nil? hash) true (poll-models/poll-hash-exists?  hash)))
-  :handle-ok (fn [context] (response/liberator-json-response (poll-models/get-poll-hash hash)))
-  
+  :handle-ok (fn [context] (response/liberator-json-response (poll-models/get-poll-hash hash))))
+
+(defresource api-poll-stats [source]
+  :available-media-types ["application/json"]
+  :allowed-methods [:get]
+  :exists? (fn [context] (poll-models/poll-exists?  source))
+  :handle-ok (fn [context]
+               (response/liberator-json-response (poll-models/get-poll-stats source)))
   )
 
 
 
 (defroutes admin-api-routes
+  (ANY "/api/poll/stats/:id" [id] (api-poll-stats id))
   (ANY "/api/poll/hash/:hash" [hash] (api-poll-hash hash))
-  (ANY "/api/poll/:id" [id] (api-user-poll id))
+  (ANY "/private/api/poll/:id" [id] (api-user-poll id))
   (ANY "/admin/api/polls" [] (admin-api-polls))
   (ANY "/admin/api/polls/:id" [id] (admin-api-polls id)))
 

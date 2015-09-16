@@ -26,3 +26,7 @@
 
 (defn sql-time-now []
   (clj-time-coerce/to-sql-time (clj-time/now)))
+
+(defn highchart-date-format 
+  [pg-timestamp]
+  (clj-time-coerce/to-long pg-timestamp))

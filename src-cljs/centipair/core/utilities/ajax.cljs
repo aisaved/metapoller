@@ -30,18 +30,48 @@
       500 (notify 500)
       422 (notify 422 "The submitted data is not valid"))))
 
+(defn custom-error-handler [handler-function response]
+  (let [status (:status response)]
+    (case status
+      202 (handle-deleted)
+      401 (notify 401)
+      403 (do (notify 200)
+              (handler-function response))
+      404 (notify 404)
+      405 (notify 405)
+      500 (notify 500)
+      422 (do
+            (notify 200)
+            (handler-function response)
+            ))))
+
+
 (defn success-handler [function-handler response]
   (notify 200)
   (function-handler response))
 
 (defn post [url params function-handler]
-  (.log js/console (clj->js params))
   (do
     (notify 102 "Loading")
     (POST url
           :params params
           :handler (partial success-handler function-handler)
           :error-handler error-handler
+          ;;:format (json-request-format)
+          :headers {:X-CSRF-Token (dom/get-value "__anti-forgery-token")}
+          :response-format (json-response-format {:keywords? true}))))
+
+(defn custom-error [cerror-handler response]
+  (notify 200)
+  (cerror-handler response))
+
+(defn cpost [url params function-handler cerror-handler]
+  (do
+    (notify 102 "Loading")
+    (POST url
+          :params params
+          :handler (partial success-handler function-handler)
+          :error-handler (partial custom-error-handler cerror-handler)
           ;;:format (json-request-format)
           :headers {:X-CSRF-Token (dom/get-value "__anti-forgery-token")}
           :response-format (json-response-format {:keywords? true}))))

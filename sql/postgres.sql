@@ -66,8 +66,9 @@ CREATE TABLE poll(
        poll_hash_tag VARCHAR (1024) NOT NULL,
        poll_description text,
        poll_created_date TIMESTAMP NOT NULL,
+       poll_total integer DEFAULT 0,
        poll_count integer DEFAULT 0,
-       poll_total integer NOT NULL DEFAULT 0
+       poll_points decimal(3,1)
        );
 
 
@@ -96,14 +97,16 @@ CREATE TABLE user_poll_log(
        );
 
 CREATE TABLE poll_stats(
-       poll_stats_id serail PRIMARY KEY,
+       poll_stats_id serial PRIMARY KEY,
        poll_id integer NOT NULL,
        poll_points decimal(3,1),
+       poll_total integer DEFAULT 0,
+       poll_count integer DEFAULT 0,
        poll_stats_time TIMESTAMP NOT NULL DEFAULT now(),
        CONSTRAINT user_poll_poll_id_fkey FOREIGN KEY (poll_id)
        REFERENCES poll (poll_id) MATCH SIMPLE 
        ON DELETE CASCADE
-)
+);
 
 
 CREATE TABLE facebook_account(
