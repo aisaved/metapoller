@@ -169,9 +169,6 @@
         poll-count (or (:user_poll_count user-poll-stats) 0)
         poll-total (or (:user_poll_count user-poll-stats) 0)
         poll-points (if (> poll-count 0) (/ poll-total poll-count) 0)]
-    (println user-poll-stats)
-    (println (:user_poll_count user-poll-stats))
-    (println (or (:user_poll_count user-poll-stats) 0))
     (do (korma/insert poll_stats (values {:poll_id (Integer. poll-id)
                                           :poll_count poll-count
                                           :poll_total poll-total
@@ -206,7 +203,7 @@
 
 (defn to-high-charts
   [poll-stat]
-  (assoc poll-stat :poll_stats_time (t/highchart-date-format (:poll_stats_time poll-stat))))
+  [(t/highchart-date-format (:poll_stats_time poll-stat)) (:poll_points poll-stat)])
 
 (defn get-poll-stats
   [poll-id]

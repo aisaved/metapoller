@@ -56,8 +56,7 @@
   :allowed-methods [:get]
   :exists? (fn [context] (poll-models/poll-exists?  source))
   :handle-ok (fn [context]
-               (response/liberator-json-response (poll-models/get-poll-stats source)))
-  )
+               (response/liberator-json-response (poll-models/get-poll-stats source))))
 
 
 

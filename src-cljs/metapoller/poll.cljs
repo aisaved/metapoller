@@ -30,13 +30,26 @@
               (fn [response] (fill-poll-data response)))))
 
 
+(defn poll-chart
+  []
+  (let [poll-id (dom/get-value "poll-id")]
+    (ajax/get-json 
+     (str "/api/poll/stats/" poll-id)
+     {}
+     (fn [response]
+       (js/createChart (clj->js (:poll-data response)) (clj->js (:poll-stats response)))))))
+
+
+
 (defn submit-poll
   [value]
   (let [poll-id (dom/get-value "poll-id")]
     (ajax/cpost (str "/private/api/poll/" poll-id)
                {:poll-id poll-id
                 :poll-vote value}
-               (fn [response] (notify 102 "Poll submitted"))
+               (fn [response] 
+                 (notify 102 "Poll submitted")
+                 (js/addPollData (clj->js {:poll_stats_time (js/Date.now), :poll_points value})))
                (fn [error] 
                  (case (:status error)
                    422 (notify 422 (get-in error [:response :errors :poll-id]))
@@ -54,11 +67,6 @@
              :on-click (partial submit-poll -1)} "Negative"]])
 
 
-(defn poll-chart
-  []
-  
-  )
-
 
 (defn render-poll-buttons
   []
@@ -66,6 +74,6 @@
 
 
 (defn render-poll-ui []
+  (poll-chart)
   (render-poll-buttons)
-  (fb/fb-init)
-  )
+  (fb/fb-init))
