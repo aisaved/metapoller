@@ -11,9 +11,7 @@
    [http.async.client :as ac]
    [cheshire.core :refer [parse-string]]
    [clojure.data.json :as json]
-   [clojure.java.io :as io]
-   
-   )
+   [clojure.java.io :as io])
   (:import
    (twitter.callbacks.protocols AsyncStreamingCallback)))
 
@@ -29,7 +27,7 @@
 (defn hash-tag-parser
   [tweet-text]
   (filter
-   (fn [each] (not (= each "#rating")))
+   (fn [each] (not (or (= each "#negative") (= each "#positive"))))
    (into [] (re-seq  #"\B#\w*[a-zA-Z]+\w*" tweet-text))))
 
 
@@ -46,8 +44,6 @@
   [tweet-text]
   (let [rating-text (first (re-find #"\B#rating +\d+(\.\d{1,2})?" tweet-text))]
     (get-rating-value rating-text)))
-
-
 
 
 (defn process-tweet
