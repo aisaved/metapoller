@@ -11,11 +11,11 @@
    [http.async.client :as ac]
    [cheshire.core :refer [parse-string]]
    [clojure.data.json :as json]
-   [clojure.java.io :as io])
+   [clojure.java.io :as io]
+   [metapoller.models :as meta-models]
+   )
   (:import
    (twitter.callbacks.protocols AsyncStreamingCallback)))
-
-
 
 
 (def my-creds (make-oauth-creds "ISVR5x4XjdwM4o5pZrOgK4pg0"
@@ -28,7 +28,7 @@
   [tweet-text]
   (filter
    (fn [each] (not (or (= each "#negative") (= each "#positive"))))
-   (into [] (re-seq  #"\B#\w*[a-zA-Z]+\w*" tweet-text))))
+   (map #(clojure.string/replace % #"#" "") (into [] (re-seq  #"\B#\w*[a-zA-Z]+\w*" tweet-text)))))
 
 
 (defn get-rating-value
@@ -40,10 +40,20 @@
         (/ rating-value 10)
         rating-value))))
 
+(defn hash-to-point
+  [rating-hash]
+  (case rating-hash
+    "#positive" 1
+    "#negative" -1
+    nil 0))
+
 (defn rating-parser
   [tweet-text]
-  (let [rating-text (first (re-find #"\B#rating +\d+(\.\d{1,2})?" tweet-text))]
-    (get-rating-value rating-text)))
+  (let [lower-case-text (clojure.string/lower-case tweet-text)
+        rating-hash (or (re-find #"#negative" lower-case-text) (re-find #"#positive" lower-case-text))
+        ]
+    (hash-to-point rating-hash)))
+
 
 
 (defn process-tweet
@@ -51,12 +61,13 @@
   (let [tweet-text (:text tweet)
         tweet-params {:tweet-text (:text tweet)
                       :hash-tags (hash-tag-parser tweet-text)
-                      :rating (rating-parser tweet-text)
+                      :vote (rating-parser tweet-text)
                       :tweet-id (:id tweet)
                       :user-id (:id (:user tweet))
                       :screen-name (:screen_name (:user tweet))
                       :profile-image (:profile_image_url (:user tweet))}]
-    tweet-params
+    (println tweet-params)
+    (meta-models/save-tweet-rating tweet-params)
     ))
 
 (defn get-mentions []

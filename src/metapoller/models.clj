@@ -8,6 +8,7 @@
    [validateur.validation :refer :all]
    [centipair.core.contrib.time :as t]
    [centipair.core.auth.user.models :as user-models]
+   [centipair.core.contrib.cryptography :as crypto]
    [korma.core :as korma :refer [insert
                                  delete
                                  select
@@ -30,6 +31,9 @@
 (defentity user_poll)
 (defentity user_poll_log)
 (defentity poll_stats)
+(defentity twitter_account)
+(defentity poll_tweet)
+
 
 
 (defn unique-hashtag?
@@ -211,3 +215,34 @@
         poll-stats (map to-high-charts (select poll_stats (where {:poll_id (Integer. poll-id)} )))]
     {:poll-data poll-data
      :poll-stats poll-stats}))
+
+
+
+(defn create-or-get-twitter-user
+  [tweet-params]
+  (let [twitter-email (str (:user-id tweet-params) "@twitter.com") ;;fake twitter email
+        user-account (user-models/select-user-email twitter-email)]
+    (if (nil? user-account)
+      (user-models/admin-save-user {:email twitter-email
+                                    :password (crypto/random-base64 32)
+                                    :is-admin false
+                                    :active true})
+      user-account)))
+
+
+(defn get-tweet-polls
+  [hash-tags]
+  (select poll (where {:poll_hash_tag [in hash-tags]})))
+
+(defn save-tweet-rating
+  "tweet-params {:tweet-text (:text tweet)
+                 :hash-tags (hash-tag-parser tweet-text)
+                 :vote (rating-parser tweet-text)
+                 :tweet-id (:id tweet)
+                 :user-id (:id (:user tweet))
+                 :screen-name (:screen_name (:user tweet))
+                 :profile-image (:profile_image_url (:user tweet))}"
+  [tweet-params]
+  (let [user-account (create-or-get-twitter-user tweet-params)]
+    
+    ))

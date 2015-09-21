@@ -128,3 +128,19 @@ CREATE TABLE twitter_account(
 );
 
 
+CREATE TABLE poll_tweet(
+       poll_tweet_id serial PRIMARY KEY,
+       poll_id integer,
+       poll_tweet_rating DECIMAL(3,1),
+       poll_tweet_user_id bigint,
+       poll_tweet_twitter_id bigint,
+       poll_tweet_text varchar(255),
+       poll_tweet_screen_name varchar(255),
+       poll_tweet_profile_image varchar(1024),
+       CONSTRAINT poll_tweet_movie_id_id_fkey FOREIGN KEY (poll_id)
+       REFERENCES poll (poll_id) MATCH SIMPLE 
+       ON DELETE CASCADE
+       );
+
+
+
