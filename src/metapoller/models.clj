@@ -166,22 +166,28 @@
 
 (defn insert-user-poll
   [poll-id user-id poll-vote]
-  (println poll-id)
-  (println user-id)
-  (println poll-vote)
   (insert user_poll (values {:poll_id (Integer. poll-id)
                              :user_account_id user-id
                              :user_poll_vote (Integer. poll-vote)})))
 
+
+(defn poll-stats-calc [poll-id]
+  (first (select
+          user_poll
+          (aggregate (sum :user_poll_vote) :user_poll_vote_total)
+          (aggregate (count :*)  :user_poll_count)
+          (where {:poll_id (Integer. poll-id)}))))
+
 (defn update-poll-stats
   [poll-id]
-  (let [user-poll-stats (first(select
-                               user_poll
-                               (aggregate (sum :user_poll_vote) :user_poll_vote_total)
-                               (aggregate (count :*)  :user_poll_count)
-                               (where {:poll_id (Integer. poll-id)})))
+  ;;TODO: dont update poll stats if number of polls is greater than number of updates
+  (let [user-poll-stats (first (select
+                                user_poll
+                                (aggregate (sum :user_poll_vote) :user_poll_vote_total)
+                                (aggregate (count :*)  :user_poll_count)
+                                (where {:poll_id (Integer. poll-id)})))
         poll-count (or (:user_poll_count user-poll-stats) 0)
-        poll-total (or (:user_poll_count user-poll-stats) 0)
+        poll-total (or (:user_poll_vote_total user-poll-stats) 0)
         poll-points (if (> poll-count 0) (/ poll-total poll-count) 0)]
     (do (korma/insert poll_stats (values {:poll_id (Integer. poll-id)
                                           :poll_count poll-count
@@ -246,9 +252,16 @@
 
 
 (defn save-tweet-poll
-  [poll-id ]
-  
-  )
+  [poll-id user-id tweet-params]
+  (insert poll_tweet (values {:poll_id poll-id
+                              :poll_tweet_vote (:vote tweet-params)
+                              :poll_tweet_user_id user-id
+                              :poll_tweet_tweet_id (:tweet-id tweet-params)
+                              :poll_tweet_twitter_id (:user-id tweet-params)
+                              :poll_tweet_text (:tweet-text tweet-params)
+                              :poll_tweet_screen_name (:screen-name tweet-params)
+                              :poll_tweet_profile_image (:profile-image tweet-params)
+                              })))
 
 (defn save-tweet-rating
   "tweet-params {:tweet-text (:text tweet)
@@ -270,5 +283,5 @@
         (do
           (insert-user-poll (:poll_id poll-obj) (:user_account_id user-account) (:vote tweet-params))
           (insert-user-poll-log (:user_account_id user-account))
-          ;;TODO update poll stats
-          )))))
+          (save-tweet-poll (:poll_id poll-obj) (:user_account_id user-account) tweet-params)
+          (update-poll-stats (:poll_id poll-obj)))))))
