@@ -134,9 +134,17 @@
 
 (defn valid-poll-interval?
   [poll-log]
-  (if (t/time-expired? (:next_poll_time poll-log))
+  (if (nil? poll-log)
     true
-    false))
+    (if (t/time-expired? (:next_poll_time poll-log))
+      true
+      false)))
+
+
+(defn valid-user-poll?
+  [user-id poll-id]
+  (empty? (select user_poll (where {:user_account_id (Integer. user-id)
+                                    :poll_id (Integer. poll-id)}))))
 
 
 (defn validate-user-poll
@@ -158,8 +166,10 @@
 
 (defn insert-user-poll
   [poll-id user-id poll-vote]
-  (insert user_poll (values {:user_poll_id (Integer. poll-id)
-                             :poll_id (Integer. poll-id)
+  (println poll-id)
+  (println user-id)
+  (println poll-vote)
+  (insert user_poll (values {:poll_id (Integer. poll-id)
                              :user_account_id user-id
                              :user_poll_vote (Integer. poll-vote)})))
 
@@ -232,7 +242,13 @@
 
 (defn get-tweet-polls
   [hash-tags]
-  (select poll (where {:poll_hash_tag [in hash-tags]})))
+  (first (select poll (where {:poll_hash_tag [in hash-tags]}))))
+
+
+(defn save-tweet-poll
+  [poll-id ]
+  
+  )
 
 (defn save-tweet-rating
   "tweet-params {:tweet-text (:text tweet)
@@ -243,6 +259,16 @@
                  :screen-name (:screen_name (:user tweet))
                  :profile-image (:profile_image_url (:user tweet))}"
   [tweet-params]
-  (let [user-account (create-or-get-twitter-user tweet-params)]
-    
-    ))
+  (let [user-account (create-or-get-twitter-user tweet-params)
+        poll-obj (get-tweet-polls (:hash-tags tweet-params))
+        user-poll-log (get-user-poll-log (:user_account_id user-account))]
+    (if (not (nil? poll-obj))
+      (if (and 
+           (valid-poll-interval? user-poll-log)
+           (valid-vote? (:vote tweet-params))
+           (valid-user-poll? (:user_account_id user-account) (:poll_id poll-obj)))
+        (do
+          (insert-user-poll (:poll_id poll-obj) (:user_account_id user-account) (:vote tweet-params))
+          (insert-user-poll-log (:user_account_id user-account))
+          ;;TODO update poll stats
+          )))))

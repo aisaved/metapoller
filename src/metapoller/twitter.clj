@@ -80,8 +80,9 @@
 
 (defn search-mentions
   []
-  (try 
+  ;;(try 
     (let [tweets (search "@metapoller")]
       (doseq [tweet (:statuses (:body tweets))] 
         (process-tweet tweet)))
-    (catch Exception e (str "Exception in twitter: " (.getMessage e)))))
+    ;;(catch Exception e (str "Exception in twitter: " (.getMessage e))))
+  )
