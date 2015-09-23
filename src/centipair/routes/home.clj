@@ -18,12 +18,15 @@
 
 (defn poll-page [hash-tag]
   (let [poll-data (meta-models/get-poll-hash hash-tag)
-        trending-polls (meta-models/get-trending-polls)]
+        trending-polls (meta-models/get-trending-polls)
+        poll-tweets (meta-models/get-poll-tweets (:poll_id poll-data))]
+    (println poll-tweets)
     (if (nil? poll-data)
       (layout/render "404.html")
       (layout/render
             "poll.html" {:trending-polls trending-polls
-                         :poll-data poll-data}))))
+                         :poll-data poll-data
+                         :poll-tweets poll-tweets}))))
 
 
 (defn csrf-token []

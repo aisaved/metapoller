@@ -37,6 +37,22 @@
   <div class="col-md-12 text-center" id="fb-container">
   </div>
 </div>
+<div class="row">
+  <div class="col-md-12 text-center" id="poll-tweet-container">
+    {% for each-tweet in poll-tweets%}
+    <div class="row">
+      <div class="col-md-1">
+	<img src="{{each-tweet.poll_tweet_profile_image}}"/>
+	<a href="https://twitter.com/intent/user?user_id={{each-tweet.movie_tweet_twitter_id}}" target="_blank">{{each-tweet.poll_tweet_screen_name}}</a>
+      </div>
+      <div class="col-md-5">
+	{{each-tweet.poll_tweet_text}}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 <input type="hidden" id="poll-id" value="{{poll-data.poll_id}}"/>
 {% endblock %}
 {% block page-scripts %}

@@ -232,6 +232,9 @@
     {:poll-data poll-data
      :poll-stats poll-stats}))
 
+(defn get-poll-tweets
+  [poll-id]
+  (select poll_tweet (where {:poll_id poll-id})))
 
 
 (defn create-or-get-twitter-user
