@@ -218,7 +218,7 @@
 
 (defn get-trending-polls
   []
-  (select poll (limit 10)))
+  (select poll (order :poll_points :DESC) (limit 10)))
 
 
 (defn to-high-charts
