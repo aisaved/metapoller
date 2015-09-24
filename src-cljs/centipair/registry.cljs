@@ -10,7 +10,8 @@
                         :render-forgot-password-form user-forms/render-forgot-password-form
                         :render-reset-password-form user-forms/render-reset-password-form
                         :fb-init facebook/fb-init
-                        :render-poll-ui poll/render-poll-ui})
+                        :render-poll-ui poll/render-poll-ui
+                        :render-home-page poll/render-home-page})
 
 
 

@@ -59,8 +59,17 @@
                (response/liberator-json-response (poll-models/get-poll-stats source))))
 
 
+(defresource api-home-poll []
+  :available-media-types ["application/json"]
+  :allowed-methods [:get]
+  :exists? true
+  :handle-ok (fn [context]
+               (response/liberator-json-response (poll-models/get-home-page-poll))))
+
+
 
 (defroutes admin-api-routes
+  (ANY "/api/home/poll" [id] (api-home-poll))
   (ANY "/api/poll/stats/:id" [id] (api-poll-stats id))
   (ANY "/api/poll/hash/:hash" [hash] (api-poll-hash hash))
   (ANY "/private/api/poll/:id" [id] (api-user-poll id))

@@ -30,15 +30,19 @@
               (fn [response] (fill-poll-data response)))))
 
 
+(defn create-poll-chart
+  "Return value must contain keys poll-stats and poll-data"
+  [api-url container]
+  (ajax/get-json api-url nil
+                 (fn [response]
+                   (.log js/console (clj->js response))
+                   (js/createChart container
+                                   (clj->js (:poll-data response))
+                                   (clj->js (:poll-stats response))))))
+
 (defn poll-chart
   []
-  (let [poll-id (dom/get-value "poll-id")]
-    (ajax/get-json 
-     (str "/api/poll/stats/" poll-id)
-     {}
-     (fn [response]
-       (js/createChart (clj->js (:poll-data response)) (clj->js (:poll-stats response)))))))
-
+  (create-poll-chart (str "/api/poll/stats/" (dom/get-value "poll-id")) "chart-container"))
 
 
 (defn submit-poll
@@ -76,4 +80,10 @@
 (defn render-poll-ui []
   (poll-chart)
   (render-poll-buttons)
+  (fb/fb-init))
+
+
+(defn render-home-page
+  []
+  (create-poll-chart "/api/home/poll" "chart-container")
   (fb/fb-init))

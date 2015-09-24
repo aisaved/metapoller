@@ -23,7 +23,7 @@
                                  has-many
                                  join
                                  with
-
+                                 order
                                  aggregate
                                  ]]))
 
@@ -288,3 +288,10 @@
           (insert-user-poll-log (:user_account_id user-account))
           (save-tweet-poll (:poll_id poll-obj) (:user_account_id user-account) tweet-params)
           (update-poll-stats (:poll_id poll-obj)))))))
+
+
+(defn get-home-page-poll
+  []
+  (let [home-poll (first (select poll (order :poll_points :DESC) (limit 1)))
+        poll-stats (get-poll-stats (:poll_id home-poll))]
+    poll-stats))

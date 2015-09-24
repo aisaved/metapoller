@@ -1,10 +1,10 @@
 var pollChart;
-function createChart(pollData, pollStats){
+function createChart(chartContainer, pollData, pollStats){
    
     pollChart = new Highcharts.Chart({
         chart: {
             type: 'spline',
-	    renderTo : 'chart-container'
+	    renderTo : chartContainer
         },
         title: {
             text: pollData["poll_title"]

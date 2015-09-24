@@ -20,7 +20,6 @@
   (let [poll-data (meta-models/get-poll-hash hash-tag)
         trending-polls (meta-models/get-trending-polls)
         poll-tweets (meta-models/get-poll-tweets (:poll_id poll-data))]
-    (println poll-tweets)
     (if (nil? poll-data)
       (layout/render "404.html")
       (layout/render
