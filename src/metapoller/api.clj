@@ -54,9 +54,14 @@
 (defresource api-poll-stats [source]
   :available-media-types ["application/json"]
   :allowed-methods [:get]
-  :exists? (fn [context] (poll-models/poll-exists?  source))
+  :exists? (fn [context] (poll-models/poll-exists? source))
   :handle-ok (fn [context]
-               (response/liberator-json-response (poll-models/get-poll-stats source))))
+               (if (get-in context [:request :params :poll-update])
+                 (response/liberator-json-response (poll-models/get-poll-stats
+                                                    source
+                                                    (get-in context [:request :params :poll-update])
+                                                    (get-in context [:request :params :poll-stats-time])))
+                 (response/liberator-json-response (poll-models/get-poll-stats source)))))
 
 
 (defresource api-home-poll []

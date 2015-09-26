@@ -30,15 +30,17 @@
               (fn [response] (fill-poll-data response)))))
 
 
+(def live-poll-stats (atom nil))
+
 (defn create-poll-chart
   "Return value must contain keys poll-stats and poll-data"
   [api-url container]
   (ajax/get-json api-url nil
                  (fn [response]
-                   (.log js/console (clj->js response))
                    (js/createChart container
                                    (clj->js (:poll-data response))
-                                   (clj->js (:poll-stats response))))))
+                                   (clj->js (:poll-stats response)))
+                   (reset! live-poll-stats response))))
 
 (defn poll-chart
   []
@@ -77,13 +79,29 @@
   (ui/render poll-buttons "poll-container"))
 
 
+(defn update-poll-chart
+  []
+  (if (nil? @live-poll-stats)
+    (.log js/console "Poll stats not updated")
+    (ajax/get-json (str "/api/poll/stats?poll-update=true&poll-stats-time=" ))
+    )
+  )
+
+(defn start-live-chart
+  []
+  (js/setInterval update-poll-chart 3000)
+  )
+
+
 (defn render-poll-ui []
   (poll-chart)
   (render-poll-buttons)
-  (fb/fb-init))
+  (fb/fb-init)
+  (start-live-chart))
 
 
 (defn render-home-page
   []
   (create-poll-chart "/api/home/poll" "chart-container")
-  (fb/fb-init))
+  (fb/fb-init)
+  (start-live-chart))
