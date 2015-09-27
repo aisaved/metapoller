@@ -35,3 +35,7 @@
 (defn from-string-timestamp
   [s-timestamp]
   (clj-time-coerce/from-long (Long/parseLong s-timestamp)))
+
+
+(defn to-sql-time [date-time]
+  (clj-time-coerce/to-sql-time date-time))

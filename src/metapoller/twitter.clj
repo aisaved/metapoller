@@ -66,6 +66,7 @@
                       :user-id (:id (:user tweet))
                       :screen-name (:screen_name (:user tweet))
                       :profile-image (:profile_image_url (:user tweet))}]
+    (println tweet-params)
     (meta-models/save-tweet-rating tweet-params)
     ))
 

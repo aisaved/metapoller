@@ -60,7 +60,7 @@
                  (response/liberator-json-response (poll-models/get-poll-stats
                                                     source
                                                     (get-in context [:request :params :poll-update])
-                                                    (get-in context [:request :params :poll-stats-time])))
+                                                    (get-in context [:request :params :poll-stats-id])))
                  (response/liberator-json-response (poll-models/get-poll-stats source)))))
 
 

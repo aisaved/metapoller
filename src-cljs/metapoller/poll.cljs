@@ -86,10 +86,11 @@
     (ajax/get-json
        (str "/api/poll/stats/" (:poll_id (:poll-data @live-poll-stats)))
        {:poll-update true
-        :poll-stats-time (new js/Date (first (last (:poll-stats @live-poll-stats))))}
+        :poll-stats-id (:poll-stats-id @live-poll-stats)}
        (fn [response]
-         (.log js/console (clj->js response))
-         ))))
+         (if (not (empty? response))
+           (doseq [each-poll-stats response]
+             (js/addPollData (clj->js each-poll-stats))))))))
 
 (defn start-live-chart
   []
