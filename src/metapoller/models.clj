@@ -228,9 +228,9 @@
 
 (defn get-updated-stats
   [poll-id poll-stats-time]
-  (println poll-stats-time)
-  {:poll-id poll-id
-   :poll-stats-time poll-stats-time})
+  (println (t/from-string-timestamp poll-stats-time))
+  (map to-high-charts (select poll_stats (where {:poll_id (Integer. poll-id)})))
+  )
 
 (defn get-poll-stats
   [poll-id &[update-poll poll-stats-time]]

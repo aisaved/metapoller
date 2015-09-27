@@ -30,3 +30,8 @@
 (defn highchart-date-format 
   [pg-timestamp]
   (clj-time-coerce/to-long pg-timestamp))
+
+
+(defn from-string-timestamp
+  [s-timestamp]
+  (clj-time-coerce/from-long (Long/parseLong s-timestamp)))

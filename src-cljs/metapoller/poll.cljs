@@ -83,13 +83,17 @@
   []
   (if (nil? @live-poll-stats)
     (.log js/console "Poll stats not updated")
-    (ajax/get-json (str "/api/poll/stats?poll-update=true&poll-stats-time=" ))
-    )
-  )
+    (ajax/get-json
+       (str "/api/poll/stats/" (:poll_id (:poll-data @live-poll-stats)))
+       {:poll-update true
+        :poll-stats-time (new js/Date (first (last (:poll-stats @live-poll-stats))))}
+       (fn [response]
+         (.log js/console (clj->js response))
+         ))))
 
 (defn start-live-chart
   []
-  (js/setInterval update-poll-chart 3000)
+  ;;(js/setInterval update-poll-chart 3000)
   )
 
 
