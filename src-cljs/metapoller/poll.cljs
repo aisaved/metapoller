@@ -67,7 +67,7 @@
 
 (defn submit-poll
   [value]
-  (let [poll-id (dom/get-value "poll-id")]
+  (let [poll-id (:poll_id (:poll-data @live-poll-stats))]
     (ajax/cpost (str "/private/api/poll/" poll-id)
                {:poll-id poll-id
                 :poll-vote value}
@@ -115,4 +115,5 @@
   []
   (create-poll-chart "/api/home/poll" "chart-container")
   (fb/fb-init)
+  (render-poll-buttons)
   (start-live-chart))

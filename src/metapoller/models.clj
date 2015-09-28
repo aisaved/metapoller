@@ -188,7 +188,7 @@
                                 (where {:poll_id (Integer. poll-id)})))
         poll-count (or (:user_poll_count user-poll-stats) 0)
         poll-total (or (:user_poll_vote_total user-poll-stats) 0)
-        poll-points (if (> poll-count 0) (/ poll-total poll-count) 0)]
+        poll-points poll-total]
     (do (korma/insert poll_stats (values {:poll_id (Integer. poll-id)
                                           :poll_count poll-count
                                           :poll_total poll-total

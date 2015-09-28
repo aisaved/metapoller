@@ -3,6 +3,7 @@
             [centipair.routes.home :refer [home-routes]]
             [centipair.routes.admin :refer [admin-routes]]
             [metapoller.api :refer [admin-api-routes]]
+            [metapoller.jobs :refer [start-scheduler]]
             [centipair.core.auth.user.routes :refer [user-routes]]
             [centipair.core.auth.user.api :refer [api-user-routes]]
             [centipair.core.auth.facebook.api :refer [api-facebook-routes]]
@@ -66,6 +67,7 @@
   (start-nrepl)
   ;;start the expired session cleanup job
   (session/start-cleanup-job!)
+  (start-scheduler)
   (timbre/info (str
                  "\n-=[metapoller started successfully"
                  (when (env :dev) "using the development profile")
