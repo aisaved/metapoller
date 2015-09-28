@@ -101,6 +101,15 @@
          :format (json-request-format)
          :response-format (json-response-format {:keywords? true}))))
 
+(defn bget-json
+  [url params function-handler]
+  (GET url
+       :params params
+       :handler function-handler
+       :error-handler (fn [response] (.log js/console "Error!"))
+       :format (json-request-format)
+       :response-format (json-response-format {:keywords? true})))
+
 (defn delete [url function-handler]
   (notify 102 "Deleting")
   (DELETE url

@@ -47,6 +47,24 @@
   (create-poll-chart (str "/api/poll/stats/" (dom/get-value "poll-id")) "chart-container"))
 
 
+
+
+
+(defn update-poll-chart
+  []
+  (if (nil? @live-poll-stats)
+    (.log js/console "Poll stats not updated")
+    (ajax/bget-json
+       (str "/api/poll/stats/" (:poll_id (:poll-data @live-poll-stats)))
+       {:poll-update true
+        :poll-stats-id (:poll-stats-id @live-poll-stats)}
+       (fn [response]
+         (if (not (empty? (:poll-stats response)))
+           (do
+             (doseq [each-poll-stats (:poll-stats response)]
+               (js/addPollData (clj->js {:poll_stats_time (first each-poll-stats), :poll_points (second each-poll-stats)})))
+             (reset! live-poll-stats response)))))))
+
 (defn submit-poll
   [value]
   (let [poll-id (dom/get-value "poll-id")]
@@ -55,7 +73,7 @@
                 :poll-vote value}
                (fn [response] 
                  (notify 102 "Poll submitted")
-                 (js/addPollData (clj->js {:poll_stats_time (js/Date.now), :poll_points value})))
+                 (update-poll-chart))
                (fn [error] 
                  (case (:status error)
                    422 (notify 422 (get-in error [:response :errors :poll-id]))
@@ -79,23 +97,11 @@
   (ui/render poll-buttons "poll-container"))
 
 
-(defn update-poll-chart
-  []
-  (if (nil? @live-poll-stats)
-    (.log js/console "Poll stats not updated")
-    (ajax/get-json
-       (str "/api/poll/stats/" (:poll_id (:poll-data @live-poll-stats)))
-       {:poll-update true
-        :poll-stats-id (:poll-stats-id @live-poll-stats)}
-       (fn [response]
-         (if (not (empty? response))
-           (doseq [each-poll-stats response]
-             (js/addPollData (clj->js each-poll-stats))))))))
+
 
 (defn start-live-chart
   []
-  ;;(js/setInterval update-poll-chart 3000)
-  )
+  (js/setInterval update-poll-chart 3000))
 
 
 (defn render-poll-ui []

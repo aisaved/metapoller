@@ -226,22 +226,18 @@
   [(t/highchart-date-format (:poll_stats_time poll-stat)) (:poll_points poll-stat)])
 
 
-(defn get-updated-stats
-  [poll-id poll-stats-id]
-  (map to-high-charts (select poll_stats (where {:poll_id (Integer. poll-id)
-                                                 :poll_stats_id [> (Integer. poll-stats-id)]}))))
-
 
 (defn get-poll-stats
   [poll-id &[update-poll poll-stats-id]]
-  (if update-poll
-    (get-updated-stats poll-id poll-stats-id)
-    (let [poll-data (get-poll poll-id)
-          poll-stats (select poll_stats (where {:poll_id (Integer. poll-id)}))
+  (let [poll-data (get-poll poll-id)
+        poll-stats (if (and update-poll (not (= "null" poll-stats-id)))
+                     (select poll_stats (where {:poll_id (Integer. poll-id)
+                                                :poll_stats_id [> (Integer. poll-stats-id)]}))
+                     (select poll_stats (where {:poll_id (Integer. poll-id)})))
           poll-stats-hc (map to-high-charts poll-stats)]
       {:poll-data poll-data
        :poll-stats poll-stats-hc
-       :poll-stats-id (:poll_stats_id (last poll-stats))})))
+       :poll-stats-id (:poll_stats_id (last poll-stats))}))
 
 (defn get-poll-tweets
   [poll-id]
