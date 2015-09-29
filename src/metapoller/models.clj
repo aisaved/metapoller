@@ -168,7 +168,8 @@
   [poll-id user-id poll-vote]
   (insert user_poll (values {:poll_id (Integer. poll-id)
                              :user_account_id user-id
-                             :user_poll_vote (Integer. poll-vote)})))
+                             :user_poll_vote (Integer. poll-vote)
+                             :expire_time (t/set-time-expiry 24)})))
 
 
 (defn poll-stats-calc [poll-id]
