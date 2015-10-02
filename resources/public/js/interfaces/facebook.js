@@ -35,7 +35,7 @@ function statusChangeCallback(response) {
 //localhost app-id 1612202385701412
 window.fbAsyncInit = function() {
     FB.init({
-      appId      : '423821031159327',
+      appId      : '1612202385701412',
       xfbml      : true,
       version    : 'v2.4'
     });

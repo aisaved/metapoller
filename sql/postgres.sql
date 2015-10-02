@@ -78,7 +78,6 @@ CREATE TABLE user_poll(
        user_account_id integer NOT NULL,
        user_poll_date TIMESTAMP NOT NULL DEFAULT now(),
        user_poll_vote integer NOT NULL,
-       expire_time TIMESTAMP NOT NULL,
        CHECK (user_poll_vote=1 OR user_poll_vote=-1),
        CONSTRAINT user_poll_poll_id_fkey FOREIGN KEY (poll_id)
        REFERENCES poll (poll_id) MATCH SIMPLE 
@@ -87,6 +86,24 @@ CREATE TABLE user_poll(
        REFERENCES user_account (user_account_id) MATCH SIMPLE 
        ON DELETE CASCADE
        );
+
+
+CREATE TABLE expire_user_poll(
+       user_poll_id serial PRIMARY KEY,
+       poll_id integer NOT NULL,
+       user_account_id integer NOT NULL,
+       user_poll_date TIMESTAMP NOT NULL DEFAULT now(),
+       user_poll_vote integer NOT NULL,
+       expire_time TIMESTAMP NOT NULL,
+       CHECK (user_poll_vote=1 OR user_poll_vote=-1),
+       CONSTRAINT expire_user_poll_poll_id_fkey FOREIGN KEY (poll_id)
+       REFERENCES poll (poll_id) MATCH SIMPLE 
+       ON DELETE CASCADE,
+       CONSTRAINT expire_user_poll_user_account_id_fkey FOREIGN KEY (user_account_id)
+       REFERENCES user_account (user_account_id) MATCH SIMPLE 
+       ON DELETE CASCADE
+       );
+
 
 CREATE TABLE user_poll_log(
        user_poll_log_id serial PRIMARY KEY,
@@ -104,7 +121,19 @@ CREATE TABLE poll_stats(
        poll_total integer DEFAULT 0,
        poll_count integer DEFAULT 0,
        poll_stats_time TIMESTAMP NOT NULL DEFAULT now(),
-       CONSTRAINT user_poll_poll_id_fkey FOREIGN KEY (poll_id)
+       CONSTRAINT poll_stats_poll_id_fkey FOREIGN KEY (poll_id)
+       REFERENCES poll (poll_id) MATCH SIMPLE 
+       ON DELETE CASCADE
+);
+
+CREATE TABLE poll_stats_24(
+       poll_stats_id serial PRIMARY KEY,
+       poll_id integer NOT NULL,
+       poll_points decimal(3,1),
+       poll_total integer DEFAULT 0,
+       poll_count integer DEFAULT 0,
+       poll_stats_time TIMESTAMP NOT NULL DEFAULT now(),
+       CONSTRAINT poll_stats_24_poll_id_fkey FOREIGN KEY (poll_id)
        REFERENCES poll (poll_id) MATCH SIMPLE 
        ON DELETE CASCADE
 );

@@ -29,8 +29,10 @@
 
 (defentity poll)
 (defentity user_poll)
+(defentity expire_user_poll)
 (defentity user_poll_log)
 (defentity poll_stats)
+(defentity poll_stats_24)
 (defentity twitter_account)
 (defentity poll_tweet)
 
@@ -166,10 +168,14 @@
 
 (defn insert-user-poll
   [poll-id user-id poll-vote]
-  (insert user_poll (values {:poll_id (Integer. poll-id)
-                             :user_account_id user-id
-                             :user_poll_vote (Integer. poll-vote)
-                             :expire_time (t/set-time-expiry 24)})))
+  (do
+    (insert user_poll (values {:poll_id (Integer. poll-id)
+                               :user_account_id user-id
+                               :user_poll_vote (Integer. poll-vote)}))
+    (insert expire_user_poll (values {:poll_id (Integer. poll-id)
+                                      :user_account_id user-id
+                                      :user_poll_vote (Integer. poll-vote)
+                                      :expire_time (t/set-time-expiry 24)}))))
 
 
 (defn poll-stats-calc [poll-id]
@@ -198,6 +204,30 @@
                                         :poll_total poll-total
                                         :poll_points poll-points})
                       (where {:poll_id (Integer. poll-id)})))))
+
+(defn update-24-hour-stats
+  "Updates stats for 24 hour polls"
+  [poll-id]
+  (let [user-poll-stats (first (select
+                                user_poll
+                                (aggregate (sum :user_poll_vote) :user_poll_vote_total)
+                                (aggregate (count :*)  :user_poll_count)
+                                (where {:poll_id (Integer. poll-id)
+                                        :expire_time [< (t/sql-time-now)]})))
+        poll-count (or (:user_poll_count user-poll-stats) 0)
+        poll-total (or (:user_poll_vote_total user-poll-stats) 0)
+        poll-points poll-total]
+    (if (not (nil? user-poll-stats))
+      (korma/insert poll_stats_24 (values {:poll_id (Integer. poll-id)
+                                           :poll_count poll-count
+                                           :poll_total poll-total
+                                           :poll_points poll-points})))))
+
+(defn expire-poll-stats
+  []
+  (let [polls (select )]
+    (doseq [each-poll polls]
+      (update-24-hour-stats (:poll_id each-poll)))))
 
 (defn insert-user-poll-log
   [user-id]
@@ -303,4 +333,3 @@
   (let [home-poll (first (select poll (order :poll_points :DESC) (limit 1)))
         poll-stats (get-poll-stats (:poll_id home-poll))]
     poll-stats))
-
