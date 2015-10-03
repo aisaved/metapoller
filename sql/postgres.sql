@@ -88,7 +88,7 @@ CREATE TABLE user_poll(
        );
 
 
-CREATE TABLE expire_user_poll(
+CREATE TABLE user_poll_expire(
        user_poll_id serial PRIMARY KEY,
        poll_id integer NOT NULL,
        user_account_id integer NOT NULL,
@@ -126,7 +126,7 @@ CREATE TABLE poll_stats(
        ON DELETE CASCADE
 );
 
-CREATE TABLE poll_stats_24(
+CREATE TABLE poll_stats_expire(
        poll_stats_id serial PRIMARY KEY,
        poll_id integer NOT NULL,
        poll_points decimal(3,1),

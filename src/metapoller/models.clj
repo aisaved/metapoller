@@ -29,10 +29,11 @@
 
 (defentity poll)
 (defentity user_poll)
-(defentity expire_user_poll)
+(defentity user_poll_expire)
 (defentity user_poll_log)
 (defentity poll_stats)
-(defentity poll_stats_24)
+(defentity poll_stats_expire)
+(defentity expire_poll_stats)
 (defentity twitter_account)
 (defentity poll_tweet)
 
@@ -172,7 +173,7 @@
     (insert user_poll (values {:poll_id (Integer. poll-id)
                                :user_account_id user-id
                                :user_poll_vote (Integer. poll-vote)}))
-    (insert expire_user_poll (values {:poll_id (Integer. poll-id)
+    (insert user_poll_expire (values {:poll_id (Integer. poll-id)
                                       :user_account_id user-id
                                       :user_poll_vote (Integer. poll-vote)
                                       :expire_time (t/set-time-expiry 24)}))))
@@ -205,11 +206,17 @@
                                         :poll_points poll-points})
                       (where {:poll_id (Integer. poll-id)})))))
 
-(defn update-24-hour-stats
-  "Updates stats for 24 hour polls"
+(defn get-expired-polls
+  []
+  (let [expired-polls (select user_poll_expire
+                              (where {:expire_time [< (t/sql-time-now)]}))]
+    expired-polls))
+
+(defn update-expire-stats
+  "Updates stats for expire hour polls"
   [poll-id]
   (let [user-poll-stats (first (select
-                                user_poll
+                                user_poll_expire
                                 (aggregate (sum :user_poll_vote) :user_poll_vote_total)
                                 (aggregate (count :*)  :user_poll_count)
                                 (where {:poll_id (Integer. poll-id)
@@ -218,16 +225,21 @@
         poll-total (or (:user_poll_vote_total user-poll-stats) 0)
         poll-points poll-total]
     (if (not (nil? user-poll-stats))
-      (korma/insert poll_stats_24 (values {:poll_id (Integer. poll-id)
+      (korma/insert poll_stats_expire (values {:poll_id (Integer. poll-id)
                                            :poll_count poll-count
                                            :poll_total poll-total
                                            :poll_points poll-points})))))
 
 (defn expire-poll-stats
   []
-  (let [polls (select )]
-    (doseq [each-poll polls]
-      (update-24-hour-stats (:poll_id each-poll)))))
+  (let [expired-polls (get-expired-polls)
+        expired-poll-ids (map #(:poll_id %) expired-polls)]
+    (if (not (empty? expired-poll-ids))
+      (doseq [poll-id expired-poll-ids]
+        (update-expire-stats poll-id)
+        (delete user_poll_expire (where {:poll_id [in expired-poll-ids]}))))))
+
+
 
 (defn insert-user-poll-log
   [user-id]
@@ -261,10 +273,23 @@
 (defn get-poll-stats
   [poll-id &[update-poll poll-stats-id]]
   (let [poll-data (get-poll poll-id)
-        poll-stats (if (and update-poll (not (= "null" poll-stats-id)))
+        poll-stats (if (and update-poll (not (= "null" poll-stats-id)) (not (nil? poll-stats-id)))
                      (select poll_stats (where {:poll_id (Integer. poll-id)
                                                 :poll_stats_id [> (Integer. poll-stats-id)]}))
                      (select poll_stats (where {:poll_id (Integer. poll-id)})))
+          poll-stats-hc (map to-high-charts poll-stats)]
+      {:poll-data poll-data
+       :poll-stats poll-stats-hc
+       :poll-stats-id (:poll_stats_id (last poll-stats))}))
+
+
+(defn get-poll-stats-expire
+  [poll-id &[update-poll poll-stats-id]]
+  (let [poll-data (get-poll poll-id)
+        poll-stats (if (and update-poll (not (= "null" poll-stats-id)) (not (nil? poll-stats-id)))
+                     (select poll_stats_expire (where {:poll_id (Integer. poll-id)
+                                                       :poll_stats_id [> (Integer. poll-stats-id)]}))
+                     (select poll_stats_expire (where {:poll_id (Integer. poll-id)})))
           poll-stats-hc (map to-high-charts poll-stats)]
       {:poll-data poll-data
        :poll-stats poll-stats-hc

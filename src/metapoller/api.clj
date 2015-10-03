@@ -64,6 +64,20 @@
                  (response/liberator-json-response (poll-models/get-poll-stats source)))))
 
 
+(defresource api-poll-stats-expire [source]
+  :available-media-types ["application/json"]
+  :allowed-methods [:get]
+  :exists? (fn [context] (poll-models/poll-exists? source))
+  :handle-ok (fn [context]
+               (if (get-in context [:request :params :poll-update])
+                 (response/liberator-json-response (poll-models/get-poll-stats-expire
+                                                    source
+                                                    (get-in context [:request :params :poll-update])
+                                                    (get-in context [:request :params :poll-stats-id])))
+                 (response/liberator-json-response (poll-models/get-poll-stats-expire source)))))
+
+
+
 (defresource api-home-poll []
   :available-media-types ["application/json"]
   :allowed-methods [:get]
@@ -76,6 +90,7 @@
 (defroutes admin-api-routes
   (ANY "/api/home/poll" [id] (api-home-poll))
   (ANY "/api/poll/stats/:id" [id] (api-poll-stats id))
+  (ANY "/api/poll/stats/expire/:id" [id] (api-poll-stats-expire id))
   (ANY "/api/poll/hash/:hash" [hash] (api-poll-hash hash))
   (ANY "/private/api/poll/:id" [id] (api-user-poll id))
   (ANY "/admin/api/polls" [] (admin-api-polls))
