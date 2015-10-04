@@ -47,7 +47,21 @@
   (create-poll-chart (str "/api/poll/stats/" (dom/get-value "poll-id")) "chart-container"))
 
 
+(defn create-expire-poll-chart
+  "Return value must contain keys poll-stats and poll-data"
+  [api-url container]
+  (ajax/get-json api-url nil
+                 (fn [response]
+                   (js/createChartExpire container
+                                   (clj->js (:poll-data response))
+                                   (clj->js (:poll-stats response)))
+                   ;;(reset! live-poll-stats response)
+                   )))
 
+
+(defn expire-chart
+  []
+  (create-expire-poll-chart (str "/api/poll/stats/expire/" (dom/get-value "poll-id")) "expire-chart-container"))
 
 
 (defn update-poll-chart
@@ -114,6 +128,7 @@
 (defn render-home-page
   []
   (create-poll-chart "/api/home/poll" "chart-container")
+  
   (fb/fb-init)
   (render-poll-buttons)
   (start-live-chart))
