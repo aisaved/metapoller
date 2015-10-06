@@ -32,19 +32,6 @@
 
 (def live-poll-stats (atom nil))
 
-(defn create-poll-chart
-  "Return value must contain keys poll-stats and poll-data"
-  [api-url container]
-  (ajax/get-json api-url nil
-                 (fn [response]
-                   (js/createChart container
-                                   (clj->js (:poll-data response))
-                                   (clj->js (:poll-stats response)))
-                   (reset! live-poll-stats response))))
-
-(defn poll-chart
-  []
-  (create-poll-chart (str "/api/poll/stats/" (dom/get-value "poll-id")) "chart-container"))
 
 
 (defn create-expire-poll-chart
@@ -57,6 +44,23 @@
                                    (clj->js (:poll-stats response)))
                    ;;(reset! live-poll-stats response)
                    )))
+
+
+(defn create-poll-chart
+  "Return value must contain keys poll-stats and poll-data"
+  [api-url container]
+  (ajax/get-json api-url nil
+                 (fn [response]
+                   (js/createChart container
+                                   (clj->js (:poll-data response))
+                                   (clj->js (:poll-stats response)))
+                   (reset! live-poll-stats response)
+                   (create-expire-poll-chart (str "/api/poll/stats/expire/" (:poll_id (:poll-data response))) "expire-chart-container")
+                   )))
+
+(defn poll-chart
+  []
+  (create-poll-chart (str "/api/poll/stats/" (dom/get-value "poll-id")) "chart-container"))
 
 
 (defn expire-chart
@@ -78,6 +82,23 @@
              (doseq [each-poll-stats (:poll-stats response)]
                (js/addPollData (clj->js {:poll_stats_time (first each-poll-stats), :poll_points (second each-poll-stats)})))
              (reset! live-poll-stats response)))))))
+
+
+(defn update-poll-chart-expire
+  []
+  (if (nil? @live-poll-stats)
+    (.log js/console "Poll stats not updated")
+    (ajax/bget-json
+       (str "/api/poll/stats/" (:poll_id (:poll-data @live-poll-stats)))
+       {:poll-update true
+        :poll-stats-id (:poll-stats-id @live-poll-stats)}
+       (fn [response]
+         (if (not (empty? (:poll-stats response)))
+           (do
+             (doseq [each-poll-stats (:poll-stats response)]
+               (js/addPollDataExpire (clj->js {:poll_stats_time (first each-poll-stats), :poll_points (second each-poll-stats)})))
+             (reset! live-poll-stats response)))))))
+
 
 (defn submit-poll
   [value]
@@ -115,7 +136,8 @@
 
 (defn start-live-chart
   []
-  (js/setInterval update-poll-chart 3000))
+  (js/setInterval update-poll-chart 3000)
+  (js/setInterval update-poll-chart-expire 3000))
 
 
 (defn render-poll-ui []
@@ -127,8 +149,7 @@
 
 (defn render-home-page
   []
-  (create-poll-chart "/api/home/poll" "chart-container")
-  
+  (create-poll-chart "/api/home/poll" "chart-container")  
   (fb/fb-init)
   (render-poll-buttons)
   (start-live-chart))
