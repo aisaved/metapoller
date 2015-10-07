@@ -77,7 +77,9 @@
 
 (defn create-fb-account
   [fb-user-info]
-  (let [user-account (create-or-get-user-account (:email fb-user-info))]
+  (let [user-account (create-or-get-user-account (if (nil? (:email fb-user-info))
+                                                   (str (:id fb-user-info) "@facebook.com")
+                                                   (:email fb-user-info)))]
     (insert facebook_account (values {:user_account_id (:user_account_id user-account)
                                       :facebook_id (:id fb-user-info)
                                       :facebook_name (:name fb-user-info)
@@ -89,6 +91,7 @@
   [access-token]
   (let [fb-user-info (get-fb-user-info access-token)
         fb-account (get-fb-account (:id fb-user-info))]
+    (println fb-user-info)
     (if (nil? fb-account)
       (let [new-fb-account (create-fb-account fb-user-info)]
         (user-models/create-fb-user-profile new-fb-account)

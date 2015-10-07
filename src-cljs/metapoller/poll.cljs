@@ -31,18 +31,21 @@
 
 
 (def live-poll-stats (atom nil))
+(def live-poll-stats-expire (atom nil))
+
 
 
 
 (defn create-expire-poll-chart
   "Return value must contain keys poll-stats and poll-data"
   [api-url container]
+  (.log js/console "Loading expire")
   (ajax/get-json api-url nil
                  (fn [response]
                    (js/createChartExpire container
                                    (clj->js (:poll-data response))
                                    (clj->js (:poll-stats response)))
-                   ;;(reset! live-poll-stats response)
+                   (reset! live-poll-stats-expire response)
                    )))
 
 
@@ -86,18 +89,18 @@
 
 (defn update-poll-chart-expire
   []
-  (if (nil? @live-poll-stats)
+  (if (nil? @live-poll-stats-expire)
     (.log js/console "Poll stats not updated")
     (ajax/bget-json
-       (str "/api/poll/stats/" (:poll_id (:poll-data @live-poll-stats)))
+       (str "/api/poll/stats/expire/" (:poll_id (:poll-data @live-poll-stats-expire)))
        {:poll-update true
-        :poll-stats-id (:poll-stats-id @live-poll-stats)}
+        :poll-stats-id (:poll-stats-id @live-poll-stats-expire)}
        (fn [response]
          (if (not (empty? (:poll-stats response)))
            (do
              (doseq [each-poll-stats (:poll-stats response)]
                (js/addPollDataExpire (clj->js {:poll_stats_time (first each-poll-stats), :poll_points (second each-poll-stats)})))
-             (reset! live-poll-stats response)))))))
+             (reset! live-poll-stats-expire response)))))))
 
 
 (defn submit-poll
