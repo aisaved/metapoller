@@ -32,10 +32,11 @@ function statusChangeCallback(response) {
 }
 
 //wemebox appi-id 423821031159327
-//localhost app-id 1612202385701412
+//localhost app-id 169309533086513
+//metapoller appi-id 1035855659791823
 window.fbAsyncInit = function() {
     FB.init({
-      appId      : '423821031159327',
+      appId      : '169309533086513',
       xfbml      : true,
       version    : 'v2.4'
     });

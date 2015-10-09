@@ -186,31 +186,6 @@
           (aggregate (count :*)  :user_poll_count)
           (where {:poll_id (Integer. poll-id)}))))
 
-(defn update-poll-stats
-  [poll-id]
-  ;;TODO: dont update poll stats if number of polls is greater than number of updates
-  (let [user-poll-stats (first (select
-                                user_poll
-                                (aggregate (sum :user_poll_vote) :user_poll_vote_total)
-                                (aggregate (count :*)  :user_poll_count)
-                                (where {:poll_id (Integer. poll-id)})))
-        poll-count (or (:user_poll_count user-poll-stats) 0)
-        poll-total (or (:user_poll_vote_total user-poll-stats) 0)
-        poll-points poll-total]
-    (do (korma/insert poll_stats (values {:poll_id (Integer. poll-id)
-                                          :poll_count poll-count
-                                          :poll_total poll-total
-                                          :poll_points poll-points}))
-        (korma/update poll (set-fields {:poll_count poll-count
-                                        :poll_total poll-total
-                                        :poll_points poll-points})
-                      (where {:poll_id (Integer. poll-id)})))))
-
-(defn get-expired-polls
-  []
-  (let [expired-polls (select user_poll_expire
-                              (where {:expire_time [< (t/sql-time-now)]}))]
-    expired-polls))
 
 (defn update-expire-stats
   "Updates stats for expire hour polls"
@@ -229,6 +204,39 @@
                                            :poll_count poll-count
                                            :poll_total poll-total
                                            :poll_points poll-points})))))
+
+
+(defn update-poll-stats
+  [poll-id]
+  ;;TODO: dont update poll stats if number of polls is greater than number of updates
+  (let [user-poll-stats (first (select
+                                user_poll
+                                (aggregate (sum :user_poll_vote) :user_poll_vote_total)
+                                (aggregate (count :*)  :user_poll_count)
+                                (where {:poll_id (Integer. poll-id)})))
+        poll-count (or (:user_poll_count user-poll-stats) 0)
+        poll-total (or (:user_poll_vote_total user-poll-stats) 0)
+        poll-points poll-total]
+    (do (korma/insert poll_stats (values {:poll_id (Integer. poll-id)
+                                          :poll_count poll-count
+                                          :poll_total poll-total
+                                          :poll_points poll-points}))
+        (korma/insert poll_stats_expire (values {:poll_id (Integer. poll-id)
+                                          :poll_count poll-count
+                                          :poll_total poll-total
+                                          :poll_points poll-points}))
+        (korma/update poll (set-fields {:poll_count poll-count
+                                        :poll_total poll-total
+                                        :poll_points poll-points})
+                      (where {:poll_id (Integer. poll-id)}))
+        )))
+
+(defn get-expired-polls
+  []
+  (let [expired-polls (select user_poll_expire
+                              (where {:expire_time [< (t/sql-time-now)]}))]
+    expired-polls))
+
 
 (defn expire-poll-stats
   []
@@ -356,5 +364,5 @@
 (defn get-home-page-poll
   []
   (let [home-poll (first (select poll (order :poll_points :DESC) (limit 1)))
-        poll-stats (get-poll-stats (:poll_id home-poll))]
+        poll-stats (if (nil? home-poll) {} (get-poll-stats (:poll_id home-poll)))]
     poll-stats))

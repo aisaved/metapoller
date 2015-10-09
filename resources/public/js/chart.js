@@ -110,5 +110,5 @@ function createChartExpire(chartContainer, pollData, pollStats){
 }
 
 function addPollDataExpire(data){
-    pollChart.series[0].addPoint([data["poll_stats_time"], data["poll_points"]]);
+    pollChartExpire.series[0].addPoint([data["poll_stats_time"], data["poll_points"]]);
 }
