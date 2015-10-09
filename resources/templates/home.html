@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "nbase.html" %}
 
 {% block body-scripts %}
 
@@ -8,51 +8,43 @@ Home
 {% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="col-md-12" id="chart-container1">
-    <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active"><a href="#ctab" aria-controls="ctab" role="tab" data-toggle="tab">Cumulative</a></li>
-      <li role="presentation"><a href="#etab" aria-controls="etab" role="tab" data-toggle="tab">Expire</a></li>
-    </ul>
-    <div class="tab-content">
-      <div role="tabpanel" class="tab-pane active" id="ctab">
-	<div class="row">
-	  <div class="col-md-12" id="chart-container">
-	  </div>
-	</div>
+<h5 class="page-header blue-header">LivePoll</h5><!-- remove this head if NOT required -->
+<div class="table-responsive">
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#ctab" aria-controls="ctab" role="tab" data-toggle="tab">Cumulative</a></li>
+    <li role="presentation"><a href="#etab" aria-controls="etab" role="tab" data-toggle="tab">Expire</a></li>
+  </ul>
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="ctab">
+      <div id="chart-container">
+	
       </div>
-      <div role="tabpanel" class="tab-pane" id="etab">
-	<div class="col-md-6" id="expire-chart-container">
-	</div>
-      </div>
-      
     </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12 text-center" id="poll-container">
+    <div role="tabpanel" class="tab-pane" id="etab">
+      <div id="expire-chart-container">
+      </div>
+    </div>
     
   </div>
+  <div id="poll-container"></div>
 </div>
-<div class="row">
-  <div class="col-md-6">
-    <div class="themed-container themed-box">
-      <h4>Vote with Twitter</h4>
-      <p>Send a tweet to @metapoller with your vote. E.g:</p>
-      <p>
-	@metapoller #tonnyabbot #negative
-	<br/>or<br/>
-	@metapoller #tonnyabbot #positive
-      </p>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="themed-container themed-box">
-      <h4>Vote with Facebook</h4>
-      <div id="fb-container"></div>
-    </div>
-  </div>
+<br clear="left">
+<div class="col-sm-12 col-md-6 col-md-offset-0 blue-box space-rear"><h2>Vote with Twitter</h2>
+  send a tweet to @metapoller with your vote. E.g:<br>
+  <blockquote>@metapoller #tonyabbott #positive<br>
+    or<br>
+    @metapoller #tonyabbott #negative</blockquote>
 </div>
+<div class="col-sm-12 col-md-6 col-md-offset-0 blue-box space-front"><h2>Vote with Facebook</h2>
+  <br clear="left">
+  <center><div id="fb-container"></div></center>
+</div>
+<br clear="left">
+<h5 class="page-header blue-header">Historical</h5><!-- remove this head if NOT required -->
+<div class="table-responsive">
+  [ graph 2 here ]
+</div>
+
 
 
 {% endblock %}
