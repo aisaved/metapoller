@@ -91,7 +91,6 @@
   [access-token]
   (let [fb-user-info (get-fb-user-info access-token)
         fb-account (get-fb-account (:id fb-user-info))]
-    (println fb-user-info)
     (if (nil? fb-account)
       (let [new-fb-account (create-fb-account fb-user-info)]
         (user-models/create-fb-user-profile new-fb-account)
