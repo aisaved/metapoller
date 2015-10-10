@@ -18,10 +18,10 @@
    (twitter.callbacks.protocols AsyncStreamingCallback)))
 
 
-(def my-creds (make-oauth-creds "ISVR5x4XjdwM4o5pZrOgK4pg0"
-                                "DHJr1UgwTgejPnVn9Xe0qo1yeS9iD1jy2CsZFWpNDEqNwWWs4n"
-                                "3246638502-OmUNOgBKq7saRPuB38lm6dql1rLiUUIxcHReFwS"
-                                "3UVLg7LzHJ5CoIHLO2pH2cQ8OJbw2dbLuVkhXjzTZdvky"))
+(def my-creds (make-oauth-creds "bLb2bAHJIRRyQxhfMXoC3ST7z"
+                                "rNpIEu5uHEbbOme7IPnnaCzqc6xl9iMydyotrHFwos6nilJ40S"
+                                "3315520896-iYM2ezQpOGZkSdEhdHLTcfgbrseTe34Nbs4So2b"
+                                "UmDTjNRmJKxYD14wEWu63u9DxT9KAZhWzrA7mcbXc3CHL"))
 
 
 (defn hash-tag-parser
