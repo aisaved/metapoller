@@ -68,6 +68,11 @@
       false
       (:is_admin auth-user))))
 
+(defn is-admin-id?
+  [user-id]
+  (let [user-account (user-model/get-user user-id)]
+    (:is_admin user-account)))
+
 ;;validations
 (defn email-exist-check
   [value]
