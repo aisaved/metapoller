@@ -139,7 +139,7 @@
   [poll-log]
   (if (nil? poll-log)
     true
-    (if (t/time-expired? (:next_poll_time poll-log))
+    (if (or (t/time-expired? (:next_poll_time poll-log)) (user-models/is-admin-id? (:user_account_id poll-log)))
       true
       false)))
 
