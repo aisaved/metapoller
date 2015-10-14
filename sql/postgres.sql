@@ -78,6 +78,7 @@ CREATE TABLE user_poll(
        user_account_id integer NOT NULL,
        user_poll_date TIMESTAMP NOT NULL DEFAULT now(),
        user_poll_vote integer NOT NULL,
+       next_poll_time TIMESTAMP NOT NULL,
        CHECK (user_poll_vote=1 OR user_poll_vote=-1),
        CONSTRAINT user_poll_poll_id_fkey FOREIGN KEY (poll_id)
        REFERENCES poll (poll_id) MATCH SIMPLE 

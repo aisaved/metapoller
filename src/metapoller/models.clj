@@ -1,4 +1,4 @@
-(ns metapoller.models
+s(ns metapoller.models
   (:use korma.db
         centipair.core.db.connection
         centipair.core.contrib.mail
@@ -30,7 +30,6 @@
 (defentity poll)
 (defentity user_poll)
 (defentity user_poll_expire)
-(defentity user_poll_log)
 (defentity poll_stats)
 (defentity poll_stats_expire)
 (defentity expire_poll_stats)
@@ -110,12 +109,10 @@
 (defn get-user-poll
   [poll-id user-id]
   (first (select user_poll (where {:poll_id (Integer. poll-id)
-                                   :user_account_id user-id}))))
+                                   :user_account_id user-id})
+                 (order :user_poll_date :ASC))))
 
 
-(defn get-user-poll-log
-  [user-id]
-  (first (select user_poll_log (where {:user_account_id user-id}))))
 
 (defn get-all-polls
   [params]
@@ -135,40 +132,26 @@
       false
       (or (= 1 vote) (= -1 vote)))))
 
-(defn valid-poll-interval?
-  [poll-log poll-obj]
-  (println poll-log)
-  (if (nil? poll-log)
+
+
+(defn valid-user-poll?
+  [user-poll]
+  (if (nil? user-poll)
     true
-    (if (or (t/time-expired? (:next_poll_time poll-log)) (user-models/is-admin-id? (:user_account_id poll-log)))
+    (if (or (t/time-expired? (:next_poll_time user-poll)) (user-models/is-admin-id? (:user_account_id user-poll)))
       true
       false)))
-
-
-(defn valid-user-poll?
-  [user-id poll-id]
-  (empty? (select user_poll (where {:user_account_id (Integer. user-id)
-                                    :poll_id (Integer. poll-id)}))))
-
-(defn valid-user-poll?
-  []
-  )
 
 
 (defn validate-user-poll
   [poll-id request]
   (let [user-account (user-models/get-authenticated-user request)
-        poll-log (get-user-poll-log (:user_account_id user-account))
         user-poll (get-user-poll poll-id (:user_account_id user-account))]
-    (if (nil? user-poll)
-      (if (nil? poll-log)
+    (if (valid-user-poll? user-poll)
+      (if (valid-vote? (get-in request [:params :poll-vote]))
         true
-        (if (valid-poll-interval? poll-log)
-          (if (valid-vote? (get-in request [:params :poll-vote]))
-            true
-            [false {:validation-result {:errors {:poll-id "Invalid vote"}}}])
-          [false {:validation-result {:errors {:poll-id "You can only do one poll per hour"}}}]))
-      [false {:validation-result {:errors {:poll-id "You have already voted for this poll"}}} ])))
+        [false {:validation-result {:errors {:poll-id "Invalid vote"}}}])
+      [false {:validation-result {:errors {:poll-id "You can vote only once per hour"}}}])))
 
 
 
@@ -177,7 +160,9 @@
   (do
     (insert user_poll (values {:poll_id (Integer. poll-id)
                                :user_account_id user-id
-                               :user_poll_vote (Integer. poll-vote)}))
+                               :user_poll_vote (Integer. poll-vote)
+                               :next_poll_time (t/set-time-expiry 24)
+                               }))
     (insert user_poll_expire (values {:poll_id (Integer. poll-id)
                                       :user_account_id user-id
                                       :user_poll_vote (Integer. poll-vote)
@@ -254,13 +239,6 @@
 
 
 
-(defn insert-user-poll-log
-  [user-id]
-  (do
-    (delete user_poll_log (where {:user_account_id user-id}))
-    (insert user_poll_log (values {:user_account_id user-id
-                                   :next_poll_time (t/set-time-expiry 1)}))))
-
 
 (defn user-poll-save
   [poll-id request]
@@ -269,7 +247,6 @@
     (let [user-poll (insert-user-poll poll-id (:user_account_id user-account) poll-vote)]
       (do
         (update-poll-stats poll-id)
-        (insert-user-poll-log (:user_account_id user-account))
         {:poll-id poll-id}))))
 
 (defn get-trending-polls
@@ -327,7 +304,9 @@
 
 (defn get-tweet-polls
   [hash-tags]
-  (first (select poll (where {:poll_hash_tag [in hash-tags]}))))
+  (let [tweet-poll (first (select poll (where {:poll_hash_tag
+                                               [in hash-tags]})))]
+    tweet-poll))
 
 
 (defn save-tweet-poll
@@ -352,18 +331,16 @@
                  :profile-image (:profile_image_url (:user tweet))}"
   [tweet-params]
   (let [user-account (create-or-get-twitter-user tweet-params)
-        poll-obj (get-tweet-polls (:hash-tags tweet-params))
-        user-poll-log (get-user-poll-log (:user_account_id user-account))]
+        poll-obj (get-tweet-polls (:hash-tags tweet-params))]
     (if (not (nil? poll-obj))
-      (if (and 
-           (valid-poll-interval? user-poll-log poll-obj)
-           (valid-vote? (:vote tweet-params))
-           (valid-user-poll? (:user_account_id user-account) (:poll_id poll-obj)))
-        (do
-          (insert-user-poll (:poll_id poll-obj) (:user_account_id user-account) (:vote tweet-params))
-          (insert-user-poll-log (:user_account_id user-account))
-          (save-tweet-poll (:poll_id poll-obj) (:user_account_id user-account) tweet-params)
-          (update-poll-stats (:poll_id poll-obj)))))))
+      (let [user-poll (get-user-poll  (:poll_id poll-obj) (:user_account_id user-account))]
+        (if (and
+             (valid-vote? (:vote tweet-params))
+             (valid-user-poll? user-poll))
+          (do
+            (insert-user-poll (:poll_id poll-obj) (:user_account_id user-account) (:vote tweet-params))
+            (save-tweet-poll (:poll_id poll-obj) (:user_account_id user-account) tweet-params)
+            (update-poll-stats (:poll_id poll-obj))))))))
 
 
 (defn get-home-page-poll
