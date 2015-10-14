@@ -136,7 +136,8 @@
       (or (= 1 vote) (= -1 vote)))))
 
 (defn valid-poll-interval?
-  [poll-log]
+  [poll-log poll-obj]
+  (println poll-log)
   (if (nil? poll-log)
     true
     (if (or (t/time-expired? (:next_poll_time poll-log)) (user-models/is-admin-id? (:user_account_id poll-log)))
@@ -148,6 +149,10 @@
   [user-id poll-id]
   (empty? (select user_poll (where {:user_account_id (Integer. user-id)
                                     :poll_id (Integer. poll-id)}))))
+
+(defn valid-user-poll?
+  []
+  )
 
 
 (defn validate-user-poll
@@ -351,7 +356,7 @@
         user-poll-log (get-user-poll-log (:user_account_id user-account))]
     (if (not (nil? poll-obj))
       (if (and 
-           (valid-poll-interval? user-poll-log)
+           (valid-poll-interval? user-poll-log poll-obj)
            (valid-vote? (:vote tweet-params))
            (valid-user-poll? (:user_account_id user-account) (:poll_id poll-obj)))
         (do

@@ -36,7 +36,7 @@ function statusChangeCallback(response) {
 //metapoller appi-id 1035855659791823
 window.fbAsyncInit = function() {
     FB.init({
-      appId      : '1035855659791823',
+      appId      : '169309533086513',
       xfbml      : true,
       version    : 'v2.4'
     });

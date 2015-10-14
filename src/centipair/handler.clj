@@ -86,7 +86,7 @@
     (wrap-routes #'home-routes middleware/wrap-csrf)
     (wrap-routes #'api-user-routes middleware/wrap-csrf)
     (wrap-routes #'user-routes middleware/wrap-csrf)
-    (wrap-routes #'home-routes middleware/wrap-csrf)
+    ;;(wrap-routes #'home-routes middleware/wrap-csrf)
     (wrap-routes #'admin-routes middleware/wrap-csrf)
     (wrap-routes #'admin-api-routes middleware/wrap-csrf)
     (wrap-routes #'api-facebook-routes middleware/wrap-csrf)
