@@ -68,7 +68,7 @@ CREATE TABLE poll(
        poll_created_date TIMESTAMP NOT NULL,
        poll_total integer DEFAULT 0,
        poll_count integer DEFAULT 0,
-       poll_points decimal(3,1)
+       poll_points integer
        );
 
 
@@ -118,7 +118,7 @@ CREATE TABLE user_poll_log(
 CREATE TABLE poll_stats(
        poll_stats_id serial PRIMARY KEY,
        poll_id integer NOT NULL,
-       poll_points decimal(3,1),
+       poll_points integer,
        poll_total integer DEFAULT 0,
        poll_count integer DEFAULT 0,
        poll_stats_time TIMESTAMP NOT NULL DEFAULT now(),
@@ -130,7 +130,7 @@ CREATE TABLE poll_stats(
 CREATE TABLE poll_stats_expire(
        poll_stats_id serial PRIMARY KEY,
        poll_id integer NOT NULL,
-       poll_points decimal(3,1),
+       poll_points integer,
        poll_total integer DEFAULT 0,
        poll_count integer DEFAULT 0,
        poll_stats_time TIMESTAMP NOT NULL DEFAULT now(),

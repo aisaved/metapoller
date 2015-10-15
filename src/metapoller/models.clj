@@ -1,4 +1,4 @@
-s(ns metapoller.models
+(ns metapoller.models
   (:use korma.db
         centipair.core.db.connection
         centipair.core.contrib.mail

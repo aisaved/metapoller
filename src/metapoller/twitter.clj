@@ -78,7 +78,6 @@
 
 (defn search-mentions
   []
-  (println "twitter ---")
   ;;(try 
     (let [tweets (search "@metapoller")]
       (doseq [tweet (:statuses (:body tweets))] 

@@ -68,7 +68,7 @@ function createChartExpire(chartContainer, pollData, pollStats){
             text: pollData["poll_title"]
         },
         subtitle: {
-            text: pollData["poll_hash_tag"]
+            text: "#" + pollData["poll_hash_tag"]
         },
         xAxis: {
             type: 'datetime',
