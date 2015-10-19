@@ -142,6 +142,10 @@
       true
       false)))
 
+(defn valid-twitter-vote?
+  [tweet-params]
+  (empty? (select poll_tweet (where {:poll_tweet_tweet_id (:tweet-id tweet-params)}))))
+
 
 (defn validate-user-poll
   [poll-id request]
@@ -335,8 +339,9 @@
     (if (not (nil? poll-obj))
       (let [user-poll (get-user-poll  (:poll_id poll-obj) (:user_account_id user-account))]
         (if (and
+             (valid-user-poll? user-poll)
              (valid-vote? (:vote tweet-params))
-             (valid-user-poll? user-poll))
+             (valid-twitter-vote? tweet-params))
           (do
             (insert-user-poll (:poll_id poll-obj) (:user_account_id user-account) (:vote tweet-params))
             (save-tweet-poll (:poll_id poll-obj) (:user_account_id user-account) tweet-params)

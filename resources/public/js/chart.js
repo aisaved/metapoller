@@ -10,7 +10,7 @@ function createChart(chartContainer, pollData, pollStats){
             text: pollData["poll_title"]
         },
         subtitle: {
-            text: pollData["poll_hash_tag"]
+            text: "#" + pollData["poll_hash_tag"]
         },
         xAxis: {
             type: 'datetime',
@@ -30,7 +30,7 @@ function createChart(chartContainer, pollData, pollStats){
         },
         tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+            pointFormat: '{point.x:%e. %b}: {point.y:.2f}'
         },
 
         plotOptions: {
@@ -88,7 +88,7 @@ function createChartExpire(chartContainer, pollData, pollStats){
         },
         tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+            pointFormat: '{point.x:%e. %b}: {point.y:.2f}'
         },
 
         plotOptions: {
