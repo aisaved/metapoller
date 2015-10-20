@@ -25,8 +25,7 @@ function createChart(chartContainer, pollData, pollStats){
         yAxis: {
             title: {
                 text: 'Rating'
-            },
-            min: -10
+            }
         },
         tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
@@ -83,8 +82,7 @@ function createChartExpire(chartContainer, pollData, pollStats){
         yAxis: {
             title: {
                 text: 'Rating'
-            },
-            min: -10
+            }
         },
         tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
