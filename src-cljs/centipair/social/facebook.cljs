@@ -8,7 +8,7 @@
 (def fb-button-state (reagent/atom {:id "fb-button" :label ""}))
 
 (defn set-loggedin-button [user-info]
-  (swap! fb-button-state assoc :label (:full_name user-info)))
+  (swap! fb-button-state assoc :label (str "Vote as " (:full_name user-info))))
 
 (defn fb-status-callback
   [response]

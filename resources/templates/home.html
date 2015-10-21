@@ -8,7 +8,7 @@ Home
 {% endblock %}
 
 {% block content %}
-<h5 class="page-header blue-header">LivePoll</h5><!-- remove this head if NOT required -->
+<!--<h5 class="page-header blue-header">LivePoll</h5>
 <div class="table-responsive">
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#ctab" aria-controls="ctab" role="tab" data-toggle="tab">Cumulative</a></li>
@@ -16,17 +16,14 @@ Home
   </ul>
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="ctab">
-      <div id="chart-container">
-	
-      </div>
+      
     </div>
     <div role="tabpanel" class="tab-pane" id="etab">
-      <div id="expire-chart-container">
-      </div>
+      
     </div>
     
   </div>
-  <div id="poll-container"></div>
+  
 </div>
 <br clear="left">
 <div class="col-sm-12 col-md-6 col-md-offset-0 blue-box space-rear"><h2>Vote with Twitter</h2>
@@ -37,12 +34,25 @@ Home
 </div>
 <div class="col-sm-12 col-md-6 col-md-offset-0 blue-box space-front"><h2>Vote with Facebook</h2>
   <br clear="left">
-  <center><div id="fb-container"></div></center>
+  <center></center>
 </div>
-<br clear="left">
+<br clear="left">-->
 
-
-
+<div class="text-center">
+  <h4>To cast your votes</h4>
+  <div id="fb-container"></div>
+  <h4>or</h4>
+  <h4>send a tweet to metapoller with yoour vote. E.g:</h4>
+  <h4>@metapoller #tonyabbot #positive</h4>
+</div>
+<div class="table-responsive">
+  <div id="chart-container">
+	
+  </div>
+  <div id="poll-container"></div>
+  <div id="expire-chart-container">
+  </div>
+</div>
 
 {% endblock %}
 {% block page-scripts %}

@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
+<!--<div class="row">
   <div class="col-md-12" id="chart-container1">
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#ctab" aria-controls="ctab" role="tab" data-toggle="tab">Cumulative</a></li>
@@ -37,7 +37,24 @@
 <div class="row">
   <div class="col-md-12 text-center" id="fb-container">
   </div>
+</div>-->
+
+<div class="text-center">
+  <h4>To cast your votes</h4>
+  <div id="fb-container"></div>
+  <h4>or</h4>
+  <h4>send a tweet to metapoller with yoour vote. E.g:</h4>
+  <h4>@metapoller #tonyabbot #positive</h4>
 </div>
+<div class="table-responsive">
+  <div id="chart-container">
+	
+  </div>
+  <div id="poll-container"></div>
+  <div id="expire-chart-container">
+  </div>
+</div>
+
 <!--<div class="row">
   <div class="col-md-12 text-center" id="poll-tweet-container">
     {% for each-tweet in poll-tweets%}
