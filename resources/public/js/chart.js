@@ -51,6 +51,9 @@ function createChart(chartContainer, pollData, pollStats){
 }
 
 function addPollData(data){
+    if (pollChart.series[0].data.length > 10){
+	pollChart.series[0].removePoint(0);
+    }
     pollChart.series[0].addPoint([data["poll_stats_time"], data["poll_points"]]);
 }
 
@@ -108,6 +111,9 @@ function createChartExpire(chartContainer, pollData, pollStats){
 }
 
 function addPollDataExpire(data){
+    if (pollChartExpire.series[0].data.length > 10){
+	pollChartExpire.series[0].removePoint(0);
+    }
     pollChartExpire.series[0].addPoint([data["poll_stats_time"], data["poll_points"]]);
 }
 

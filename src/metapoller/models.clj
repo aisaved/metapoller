@@ -269,8 +269,11 @@
   (let [poll-data (get-poll poll-id)
         poll-stats (if (and update-poll (not (= "null" poll-stats-id)) (not (nil? poll-stats-id)))
                      (select poll_stats (where {:poll_id (Integer. poll-id)
-                                                :poll_stats_id [> (Integer. poll-stats-id)]}))
-                     (select poll_stats (where {:poll_id (Integer. poll-id)})))
+                                                :poll_stats_id [> (Integer. poll-stats-id)]})
+                             (limit 10))
+                     (select poll_stats (where {:poll_id (Integer. poll-id)})
+                             (order :poll_stats_time :DESC)
+                             (limit 10)))
           poll-stats-hc (map to-high-charts poll-stats)]
       {:poll-data poll-data
        :poll-stats poll-stats-hc
@@ -282,8 +285,11 @@
   (let [poll-data (get-poll poll-id)
         poll-stats (if (and update-poll (not (= "null" poll-stats-id)) (not (nil? poll-stats-id)))
                      (select poll_stats_expire (where {:poll_id (Integer. poll-id)
-                                                       :poll_stats_id [> (Integer. poll-stats-id)]}))
-                     (select poll_stats_expire (where {:poll_id (Integer. poll-id)})))
+                                                       :poll_stats_id [> (Integer. poll-stats-id)]})
+                             (limit 10))
+                     (select poll_stats_expire (where {:poll_id (Integer. poll-id)})
+                             (order :poll_stats_time :DESC)
+                             (limit 10)))
           poll-stats-hc (map to-high-charts poll-stats)]
       {:poll-data poll-data
        :poll-stats poll-stats-hc
