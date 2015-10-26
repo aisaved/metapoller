@@ -27,10 +27,7 @@ function createChart(chartContainer, pollData, pollStats){
                 text: 'Rating'
             }
         },
-        tooltip: {
-            headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x:%e. %b}: {point.y:.2f}'
-        },
+        
 
         plotOptions: {
             spline: {
@@ -41,12 +38,14 @@ function createChart(chartContainer, pollData, pollStats){
         },
 
         series: [{
-            name: "Rating",
-            // Define the data points. All series have a dummy year
-            // of 1970/71 in order to be compared on the same x axis. Note
-            // that in JavaScript, months start at 0 for January, 1 for February etc.
-            data: pollStats
-        } ]
+            name: pollData["poll_title"],
+            data: pollStats,
+            type: 'spline',
+            tooltip: {
+                valueDecimals: 2
+            }
+        }]
+	
     });
 }
 

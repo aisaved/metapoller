@@ -274,10 +274,14 @@
                      (select poll_stats (where {:poll_id (Integer. poll-id)})
                              (order :poll_stats_time :DESC)
                              (limit 10)))
-          poll-stats-hc (map to-high-charts poll-stats)]
+        sorted-poll-stats (sort-by :poll_stats_time poll-stats)
+        poll-stats-hc (map to-high-charts sorted-poll-stats)]
       {:poll-data poll-data
        :poll-stats poll-stats-hc
-       :poll-stats-id (:poll_stats_id (last poll-stats))}))
+       :poll-stats-id (:poll_stats_id (if (and update-poll (not (= "null" poll-stats-id)) (not (nil? poll-stats-id)))
+                                        (last poll-stats)
+                                        (first poll-stats)
+                                        ))}))
 
 
 (defn get-poll-stats-expire
@@ -285,14 +289,19 @@
   (let [poll-data (get-poll poll-id)
         poll-stats (if (and update-poll (not (= "null" poll-stats-id)) (not (nil? poll-stats-id)))
                      (select poll_stats (where {:poll_id (Integer. poll-id)
-                                                       :poll_stats_id [> (Integer. poll-stats-id)]})
+                                                :poll_stats_id [> (Integer. poll-stats-id)]})
                              (limit 10))
                      (select poll_stats (where {:poll_id (Integer. poll-id)})
                              (order :poll_stats_time :DESC)))
-          poll-stats-hc (map to-high-charts poll-stats)]
+        sorted-poll-stats (sort-by :poll_stats_time poll-stats)
+        poll-stats-hc (map to-high-charts sorted-poll-stats)]
       {:poll-data poll-data
        :poll-stats poll-stats-hc
-       :poll-stats-id (:poll_stats_id (last poll-stats))}))
+       :poll-stats-id (:poll_stats_id (if (and update-poll (not (= "null" poll-stats-id)) (not (nil? poll-stats-id)))
+                                        (last poll-stats)
+                                        (first poll-stats)
+                                        )
+                                      )}))
 
 (defn get-poll-tweets
   [poll-id]
