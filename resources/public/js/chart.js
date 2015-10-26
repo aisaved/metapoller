@@ -117,3 +117,32 @@ function addPollDataExpire(data){
     pollChartExpire.series[0].addPoint([data["poll_stats_time"], data["poll_points"]]);
 }
 
+
+var historyChart;
+function createHistoryChart(chartContainer, pollData, pollStats){
+    historyChart = new Highcharts.StockChart({
+	chart: {
+	    renderTo: 'history-chart-container'},
+        rangeSelector: {
+            selected: 1
+        },
+        title: {
+            text: pollData["poll_title"] + " historical data"
+        },
+	subtitle: {
+            text: "#" + pollData["poll_hash_tag"]
+        },
+        series: [{
+            name: pollData["poll_title"] + " historical data",
+            data: pollStats,
+            type: 'spline',
+            tooltip: {
+                valueDecimals: 2
+            }
+        }]
+    });
+}
+
+function addHistoryChart(data){
+    historyChart.series[0].addPoint([data["poll_stats_time"], data["poll_points"]]);
+}

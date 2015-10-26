@@ -4,4 +4,4 @@
 ;;Example :email "Not valid email"
 
 (defn validation-error [key message]
-  [false {:validation-result {:errors {key #{message}}}}])
+  [false {:validation-result {:errors {key message}}}])

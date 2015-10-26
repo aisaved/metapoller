@@ -42,7 +42,7 @@
   (.log js/console "Loading expire")
   (ajax/get-json api-url nil
                  (fn [response]
-                   (js/createChartExpire container
+                   (js/createHistoryChart container
                                    (clj->js (:poll-data response))
                                    (clj->js (:poll-stats response)))
                    (reset! live-poll-stats-expire response)
@@ -58,7 +58,7 @@
                                    (clj->js (:poll-data response))
                                    (clj->js (:poll-stats response)))
                    (reset! live-poll-stats response)
-                   (create-expire-poll-chart (str "/api/poll/stats/expire/" (:poll_id (:poll-data response))) "expire-chart-container")
+                   (create-expire-poll-chart (str "/api/poll/stats/expire/" (:poll_id (:poll-data response))) "history-chart-container")
                    )))
 
 (defn poll-chart
@@ -99,7 +99,7 @@
          (if (not (empty? (:poll-stats response)))
            (do
              (doseq [each-poll-stats (:poll-stats response)]
-               (js/addPollDataExpire (clj->js {:poll_stats_time (first each-poll-stats), :poll_points (second each-poll-stats)})))
+               (js/addHistoryChart (clj->js {:poll_stats_time (first each-poll-stats), :poll_points (second each-poll-stats)})))
              (reset! live-poll-stats-expire response)))))))
 
 
