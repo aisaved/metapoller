@@ -208,9 +208,18 @@
                                 (aggregate (sum :user_poll_vote) :user_poll_vote_total)
                                 (aggregate (count :*)  :user_poll_count)
                                 (where {:poll_id (Integer. poll-id)})))
+        poll-positive-count (:user_poll_positive_count (first (select user_poll
+                                                                  (aggregate (count :*)  :user_poll_positive_count)
+                                                                  (where {:poll_id (Integer. poll-id) :user_poll_vote [> 0]}))))
+        poll-negative-count (:user_poll_negative_count (first (select user_poll
+                                                                  (aggregate (count :*)  :user_poll_negative_count)
+                                                                  (where {:poll_id (Integer. poll-id) :user_poll_vote [< 0]}))))
         poll-count (or (:user_poll_count user-poll-stats) 0)
         poll-total (or (:user_poll_vote_total user-poll-stats) 0)
         poll-points poll-total]
+    (println poll-positive-count)
+    (println "----")
+    (println poll-negative-count)
     (do (korma/insert poll_stats (values {:poll_id (Integer. poll-id)
                                           :poll_count poll-count
                                           :poll_total poll-total
@@ -221,7 +230,10 @@
                                           :poll_points poll-points}))
         (korma/update poll (set-fields {:poll_count poll-count
                                         :poll_total poll-total
-                                        :poll_points poll-points})
+                                        :poll_points poll-points
+                                        :poll_positive_count poll-positive-count
+                                        :poll_negative_count poll-negative-count
+                                        })
                       (where {:poll_id (Integer. poll-id)}))
         )))
 

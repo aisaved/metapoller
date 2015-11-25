@@ -68,7 +68,9 @@ CREATE TABLE poll(
        poll_created_date TIMESTAMP NOT NULL,
        poll_total integer DEFAULT 0,
        poll_count integer DEFAULT 0,
-       poll_points integer
+       poll_points integer,
+       poll_positive_count integer,
+       poll_negative_count integer
        );
 
 
