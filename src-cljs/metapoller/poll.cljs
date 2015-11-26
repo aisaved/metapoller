@@ -15,6 +15,7 @@
 
 
 
+
 (defn fill-poll-data
   [response]
   (.log js/console response)
@@ -30,10 +31,21 @@
               (fn [response] (fill-poll-data response)))))
 
 
-(def live-poll-stats (atom nil))
-(def live-poll-stats-expire (atom nil))
+(def live-poll-stats (reagent/atom nil))
+(def live-poll-stats-expire (reagent/atom nil))
 
 
+(defn percent [value total]
+  (* 100 (/ value total)))
+
+
+(defn poll-stats-ui []  
+  [:div {:class "text-center"}
+   [:div (str "poll positive " (percent (:poll_positive_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))) ]
+   [:div (str "poll negative " (percent (:poll_negative_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))) ]])
+
+(defn render-poll-stats-ui []
+  (ui/render poll-stats-ui "poll-stats-container"))
 
 
 (defn create-expire-poll-chart
@@ -58,6 +70,7 @@
                                    (clj->js (:poll-data response))
                                    (clj->js (:poll-stats response)))
                    (reset! live-poll-stats response)
+                   (render-poll-stats-ui)
                    (create-expire-poll-chart (str "/api/poll/stats/expire/" (:poll_id (:poll-data response))) "history-chart-container")
                    )))
 
@@ -146,6 +159,7 @@
 (defn render-poll-ui []
   (poll-chart)
   (render-poll-buttons)
+  ;;(render-poll-stats-ui)
   (fb/fb-init)
   (start-live-chart))
 
