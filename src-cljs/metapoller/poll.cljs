@@ -36,13 +36,15 @@
 
 
 (defn percent [value total]
-  (* 100 (/ value total)))
+  (.round js/Math (* 100 (/ value total))))
 
 
-(defn poll-stats-ui []  
-  [:div {:class "text-center"}
-   [:div (str "poll positive " (percent (:poll_positive_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))) ]
-   [:div (str "poll negative " (percent (:poll_negative_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))) ]])
+(defn poll-stats-ui []
+  (let [positive-percent (percent (:poll_positive_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))
+        negative-percent (percent (:poll_negative_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))]
+    [:div {:class "percent-chart-container"}
+     [:div {:class "poll-chart chart-positive" :style {:width (str positive-percent "%")}} (str "Positive votes " positive-percent "%") ]
+     [:div {:class "poll-chart chart-negative" :style {:width (str negative-percent "%")}} (str "Negative votes " negative-percent "%")]]))
 
 (defn render-poll-stats-ui []
   (ui/render poll-stats-ui "poll-stats-container"))

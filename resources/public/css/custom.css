@@ -133,3 +133,22 @@
 .poll-button{
     margin-right : 10px;
 }
+
+.percent-chart-container{
+    margin:10px;
+}
+.poll-chart{
+    color:#fff;
+    text-align:center;
+}
+
+
+.chart-positive{
+    float:left;
+    background-color: #5cb85c;
+}
+
+.chart-negative{
+    float:left;
+    background-color: #d9534f;
+}
