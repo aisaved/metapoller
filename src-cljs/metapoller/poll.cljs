@@ -41,10 +41,13 @@
 
 (defn poll-stats-ui []
   (let [positive-percent (percent (:poll_positive_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))
-        negative-percent (percent (:poll_negative_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))]
-    [:div {:class "percent-chart-container"}
-     [:div {:class "poll-chart chart-positive" :style {:width (str positive-percent "%")}} (str "Positive votes " positive-percent "%") ]
-     [:div {:class "poll-chart chart-negative" :style {:width (str negative-percent "%")}} (str "Negative votes " negative-percent "%")]]))
+        negative-percent (percent (:poll_negative_count (:poll-data @live-poll-stats)) (:poll_count (:poll-data @live-poll-stats)))
+        total (:poll_count (:poll-data @live-poll-stats))]
+    [:div
+     [:div {:class "text-center"} [:h4 "Total votes:" (:poll_count (:poll-data @live-poll-stats))]]
+     [:div {:class "percent-chart-container"}
+      [:div {:class "poll-chart chart-positive" :style {:width (str positive-percent "%")}} (str "Positive votes " positive-percent "%") ]
+      [:div {:class "poll-chart chart-negative" :style {:width (str negative-percent "%")}} (str "Negative votes " negative-percent "%")]]]))
 
 (defn render-poll-stats-ui []
   (ui/render poll-stats-ui "poll-stats-container"))
