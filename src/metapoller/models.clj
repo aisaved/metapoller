@@ -217,9 +217,6 @@
         poll-count (or (:user_poll_count user-poll-stats) 0)
         poll-total (or (:user_poll_vote_total user-poll-stats) 0)
         poll-points poll-total]
-    (println poll-positive-count)
-    (println "----")
-    (println poll-negative-count)
     (do (korma/insert poll_stats (values {:poll_id (Integer. poll-id)
                                           :poll_count poll-count
                                           :poll_total poll-total
@@ -234,8 +231,7 @@
                                         :poll_positive_count poll-positive-count
                                         :poll_negative_count poll-negative-count
                                         })
-                      (where {:poll_id (Integer. poll-id)}))
-        )))
+                      (where {:poll_id (Integer. poll-id)})))))
 
 (defn get-expired-polls
   []
